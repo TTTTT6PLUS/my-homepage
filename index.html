@@ -224,7 +224,8 @@
       ];
       let isGreen = false;   // 全局变量：记住当前是不是绿色
 
-      let tasks = [];
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      renderTodo();   // 页面一打开，就把之前存的待办显示出来
 
       function addTodo() {
        let task = document.getElementById("todoInput").value;
@@ -232,12 +233,18 @@
        return;
          }
       tasks.push(task);
+      saveTasks();
       document.getElementById("todoInput").value = "";
       renderTodo();
       }
 
+      function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
       function deleteTodo(index) {
       tasks.splice(index, 1);   // 删掉数组里第 index 个
+      saveTasks();
       renderTodo();             // 重新画一遍列表
       }
 
