@@ -245,6 +245,15 @@
       <button onclick="resetTimer()">重置</button>
       <p id="timerDisplay">0 秒</p>
     </div>
+    
+    <div style="margin-top: 24px;">
+      <h2>幸运抽签</h2>
+      <input id="namePool" type="text" placeholder="输入一个名字">
+      <button onclick="addName()">加入名单</button>
+      <button onclick="startDraw()">开始抽签</button>
+      <p id="drawResult">点「开始抽签」试试手气~</p>
+      <ul id="poolList"></ul>
+    </div>
   </div>          
 </div>            
 
@@ -259,6 +268,7 @@
       let isGreen = false;   // 全局变量：记住当前是不是绿色
       let timerId = null;   // 定时器的“身份证”，null 表示没在计时
       let leftTime = 0;     // 还剩多少秒
+      let pool = [];   // 抽签名单（一个字符串数组）
 
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       renderTodo();   // 页面一打开，就把之前存的待办显示出来
@@ -433,6 +443,38 @@
         leftTime = 0;
         document.getElementById("timerDisplay").innerText = "0 秒";
         document.getElementById("timerInput").value = "";
+    }
+
+      function addName() {
+       let name = document.getElementById("namePool").value;
+       if (name === "") {
+          return;
+        }
+       pool.push(name);
+       document.getElementById("namePool").value = "";
+       renderPool();
+    }
+
+      function renderPool() {
+       let list = document.getElementById("poolList");
+       list.innerHTML = "";   // 先清空，避免重复
+       pool.forEach(n => {
+         let li = document.createElement("li");
+         li.textContent = n;
+         list.appendChild(li);
+      });
+    }
+
+      function startDraw() {
+       if (pool.length === 0) {
+         document.getElementById("drawResult").innerText = "名单是空的，先加几个人吧";
+         return;
+        }
+       document.getElementById("drawResult").innerText = "抽签中...";
+       setTimeout(() => {
+         let i = Math.floor(Math.random() * pool.length);   // 随机抽一个下标
+         document.getElementById("drawResult").innerText = "恭喜 🎉 " + pool[i] + " 中奖！";
+       }, 2000);
     }
     </script>
   </body>
