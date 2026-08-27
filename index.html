@@ -237,6 +237,14 @@
         <p id="todoCount">未完成：0 件</p>
         <ul id="todoList"></ul>
     </div>
+
+     <div style="margin-top: 24px;">
+      <h2>倒计时器</h2>
+      <input id="timerInput" type="text" placeholder="输入秒数">
+      <button onclick="startTimer()">开始</button>
+      <button onclick="resetTimer()">重置</button>
+      <p id="timerDisplay">0 秒</p>
+    </div>
   </div>          
 </div>            
 
@@ -249,6 +257,8 @@
         "吃白饭的蓝色大肥鱼我爱你"
       ];
       let isGreen = false;   // 全局变量：记住当前是不是绿色
+      let timerId = null;   // 定时器的“身份证”，null 表示没在计时
+      let leftTime = 0;     // 还剩多少秒
 
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       renderTodo();   // 页面一打开，就把之前存的待办显示出来
@@ -387,6 +397,43 @@
        saveTasks();
        renderTodo();
       }
+
+      function startTimer() {
+       let seconds = Number(document.getElementById("timerInput").value);  // 字符串转数字
+
+       if (timerId !== null) {
+         clearInterval(timerId);   // 如果已经在计时，先停掉旧的
+        }
+
+       if (isNaN(seconds) || seconds <= 0) {   // 不是数字或不是正数
+         document.getElementById("timerDisplay").innerText = "请输入一个正数";
+         return;
+        }
+
+       leftTime = seconds;
+       document.getElementById("timerDisplay").innerText = leftTime + " 秒";
+
+       timerId = setInterval(() => {
+         leftTime = leftTime - 1;                                    // 每秒减 1
+         document.getElementById("timerDisplay").innerText = leftTime + " 秒";
+
+       if (leftTime <= 0) {
+         clearInterval(timerId);   // 时间到，停下定时器
+         timerId = null;           // 清空身份证（重要！否则下次判断会出错）
+         document.getElementById("timerDisplay").innerText = "时间到！";
+        }
+      }, 1000);
+    }
+
+      function resetTimer() {
+        if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+        }
+        leftTime = 0;
+        document.getElementById("timerDisplay").innerText = "0 秒";
+        document.getElementById("timerInput").value = "";
+    }
     </script>
   </body>
 </html>
