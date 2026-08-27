@@ -484,16 +484,18 @@
        }, 2000);
     }
 
-    function getDog() {
-      document.getElementById("dogStatus").innerText = "加载中...";   // 先提示等待
-      fetch("https://dog.ceo/api/breeds/image/random")
-        .then(res => res.json())      // 第一步：把回信解析成对象
-        .then(data => {               // 第二步：拿到对象后干活
-         let img = document.getElementById("dogImg");
-         img.src = data.message;     // data.message 就是狗图的网址
-         img.style.display = "block";// 把图显示出来
-         document.getElementById("dogStatus").innerText = "这就是你的狗狗！";
-       });
+     async function getDog() {
+        document.getElementById("dogStatus").innerText = "加载中...";
+        try {
+          let res = await fetch("https://dog.ceo/api/breeds/image/random");
+          let data = await res.json();
+          let img = document.getElementById("dogImg");
+          img.src = data.message;
+          img.style.display = "block";
+          document.getElementById("dogStatus").innerText = "这就是你的狗狗！";
+       } catch (err) {
+          document.getElementById("dogStatus").innerText = "抓狗失败，检查网络~";
+       }
     }
     </script>
   </body>
