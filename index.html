@@ -153,6 +153,17 @@
         background: #ef4444;
       }
 
+      .done-btn {
+        margin: 0 0 0 12px;
+        padding: 3px 10px;
+        font-size: 12px;
+        background: #10b981;
+      }
+
+      .done-btn:hover {
+       background: #059669;
+      }
+
       .del-btn:hover {
         background: #dc2626;
       }
@@ -232,7 +243,7 @@
       if (task === "") {
        return;
          }
-      tasks.push(task);
+      tasks.push({ text: task, done: false });
       saveTasks();
       document.getElementById("todoInput").value = "";
       renderTodo();
@@ -248,23 +259,44 @@
       renderTodo();             // 重新画一遍列表
       }
 
+      function toggleDone(index) {
+        tasks[index].done = !tasks[index].done;   // 完成状态取反
+        saveTasks();                              // 存起来
+        renderTodo();                             // 重新画一遍
+      }
+
       function renderTodo() {
        let list = document.getElementById("todoList");
        list.innerHTML = "";   // 先清空旧列表，避免越加越多
+       
        for (let i = 0; i < tasks.length; i++) {
-         let li = document.createElement("li");
-         li.textContent = tasks[i];
+          let item = tasks[i];            // 每一项现在是个对象
 
-         let btn = document.createElement("button");
-         btn.textContent = "删除";
-         btn.className = "del-btn";
-         btn.onclick = function () {
+          let li = document.createElement("li");
+          li.textContent = item.text;     // 显示文字
+
+          if (item.done) {
+           li.style.textDecoration = "line-through";  // 做完了就划线
+         }
+
+         let doneBtn = document.createElement("button");
+         doneBtn.textContent = "完成";
+         doneBtn.className = "done-btn";
+         doneBtn.onclick = function () {
+           toggleDone(i);
+         };
+
+         let delBtn = document.createElement("button");
+         delBtn.textContent = "删除";
+         delBtn.className = "del-btn";
+         delBtn.onclick = function () {
            deleteTodo(i);
-          };
+         };
 
-         li.appendChild(btn);
+         li.appendChild(doneBtn);
+         li.appendChild(delBtn);
          list.appendChild(li);
-        }
+         }
       }
 
       function randomQuote() {
