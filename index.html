@@ -254,6 +254,13 @@
       <p id="drawResult">点「开始抽签」试试手气~</p>
       <ul id="poolList"></ul>
     </div>
+
+    <div style="margin-top: 24px;">
+      <h2>随机狗狗</h2>
+      <button onclick="getDog()">来一只狗狗</button>
+      <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
+      <img id="dogImg" alt="随机狗狗" style="max-width: 300px; border-radius: 12px; margin-top: 12px; display: none;">
+    </div>
   </div>          
 </div>            
 
@@ -475,6 +482,18 @@
          let i = Math.floor(Math.random() * pool.length);   // 随机抽一个下标
          document.getElementById("drawResult").innerText = "恭喜 🎉 " + pool[i] + " 中奖！";
        }, 2000);
+    }
+
+    function getDog() {
+      document.getElementById("dogStatus").innerText = "加载中...";   // 先提示等待
+      fetch("https://dog.ceo/api/breeds/image/random")
+        .then(res => res.json())      // 第一步：把回信解析成对象
+        .then(data => {               // 第二步：拿到对象后干活
+         let img = document.getElementById("dogImg");
+         img.src = data.message;     // data.message 就是狗图的网址
+         img.style.display = "block";// 把图显示出来
+         document.getElementById("dogStatus").innerText = "这就是你的狗狗！";
+       });
     }
     </script>
   </body>
