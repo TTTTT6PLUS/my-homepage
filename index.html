@@ -167,6 +167,17 @@
       .del-btn:hover {
         background: #dc2626;
       }
+
+      .edit-btn {
+        margin: 0 0 0 12px;
+        padding: 3px 10px;
+        font-size: 12px;
+        background: #f59e0b;
+      }
+
+      .edit-btn:hover {
+        background: #d97706;
+      }
     </style>
   </head>
 
@@ -217,9 +228,13 @@
       <p id="quoteText">点下面的按钮，抽一句摸鱼语录~</p>
       <button onclick="randomQuote()">随机摸鱼语录</button> 
       <div style="margin-top: 24px;">
+
         <h2>待办清单</h2>
-        <input id="todoInput" type="text" placeholder="输入要做的事">
+        <input id="todoInput" type="text" placeholder="输入要做的事" onkeydown="checkEnter(event)">
         <button onclick="addTodo()">添加</button>
+        <button onclick="completeAll()">全部完成</button>
+        <button onclick="clearDone()">清除已完成</button>
+        <p id="todoCount">未完成：0 件</p>
         <ul id="todoList"></ul>
     </div>
   </div>          
@@ -247,6 +262,12 @@
       saveTasks();
       document.getElementById("todoInput").value = "";
       renderTodo();
+      }
+
+      function checkEnter(event) {
+       if (event.key === "Enter") {
+         addTodo();
+       }
       }
 
       function saveTasks() {
@@ -293,10 +314,24 @@
            deleteTodo(i);
          };
 
+         let editBtn = document.createElement("button");
+         editBtn.textContent = "编辑";
+         editBtn.className = "edit-btn";
+         editBtn.onclick = function () {
+           editTodo(i);
+         };
+
          li.appendChild(doneBtn);
          li.appendChild(delBtn);
+         li.appendChild(editBtn);
          list.appendChild(li);
          }
+      updateCount();   // ← 新增这一行
+      }
+
+      function updateCount() {
+       let active = tasks.filter(t => t.done === false);  // 只留没完成的
+       document.getElementById("todoCount").innerText = "未完成：" + active.length + " 件";
       }
 
       function randomQuote() {
@@ -324,10 +359,33 @@
          }
       }
 
+      function editTodo(index) {
+       let newText = prompt("修改这条待办：", tasks[index].text);
+       if (newText !== null && newText !== "") {
+         tasks[index].text = newText;   // 更新内容
+         saveTasks();                   // 存起来
+         renderTodo();                  // 重新画一遍
+         }
+      }
+
       function useInput() {
         let newName = document.getElementById("nameInput").value;
         document.getElementById("myName").innerText = "你好，我是" + newName;
         document.getElementById("nameInput").value = "";
+      }
+
+      function clearDone() {
+       tasks = tasks.filter(t => t.done === false);   // 只留没完成的
+       saveTasks();
+       renderTodo();
+      }
+
+      function completeAll() {
+       tasks.forEach(t => {
+          t.done = true;
+       });
+       saveTasks();
+       renderTodo();
       }
     </script>
   </body>
