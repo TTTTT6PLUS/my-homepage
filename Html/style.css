@@ -10,6 +10,9 @@
   --red: #ef4444;
   --pink: #ec4899;
   --track: #e2e8f0;
+  --bg: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  --card-bg: hsl(55, 85%, 84%);
+  --todo-bg: #e0f2fe;
 }
 
 * {
@@ -21,7 +24,7 @@ body {
   padding: 40px 20px;
   text-align: center;
   font-family: "微软雅黑", "PingFang SC", sans-serif;
-  background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  background: var(--bg);
 }
 
 body.green {
@@ -32,7 +35,7 @@ body.green {
   max-width: 520px;
   margin: 0 auto;
   padding: 40px 30px;
-  background: hsl(55, 85%, 84%);
+  background: var(--card-bg);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
@@ -171,7 +174,7 @@ input {
   margin: 6px 0;
   padding: 10px 14px;
   color: var(--blue-deep);
-  background: #e0f2fe;
+  background: var(--todo-bg);
   border-radius: 10px;
 }
 
@@ -209,4 +212,26 @@ input {
 
 .hidden {
   display: none;
+}
+
+/* ---------- 深色模式 ---------- */
+body.dark {
+  --bg: linear-gradient(135deg, #0f172a, #1e293b);
+  --card-bg: #1e293b;
+  --todo-bg: #334155;
+  --blue-deep: #93c5fd;
+  --text: #cbd5e1;
+  --track: #334155;
+  --blue-lite: #334155;
+  --blue-dark: #93c5fd;
+}
+
+body.dark a {
+  color: #60a5fa;
+}
+
+body.dark input {
+  color: #e2e8f0;
+  background: #0f172a;
+  border-color: #334155;
 }

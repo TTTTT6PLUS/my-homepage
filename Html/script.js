@@ -132,6 +132,15 @@ function changeColor() {
   document.body.classList.toggle("green", isGreen);
 }
 
+// ---------- 深色模式 ----------
+const THEME_KEY = "myThemeHtml";
+
+function toggleTheme() {
+  const dark = document.body.classList.toggle("dark");
+  $("btnTheme").textContent = dark ? "☀️ 切回白天" : "🌙 切换主题";
+  localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+}
+
 function useInput() {
   const name = $("nameInput").value.trim();
   if (!name) return;
@@ -279,6 +288,7 @@ function restartGame() {
 on("btnHello", "click", sayHello);
 on("btnRename", "click", changeName);
 on("btnSkin", "click", changeColor);
+on("btnTheme", "click", toggleTheme);
 on("btnConfirmName", "click", useInput);
 on("btnQuote", "click", randomQuote);
 on("btnAddTodo", "click", addTodo);
@@ -300,4 +310,10 @@ on("ghName", "keydown", (e) => { if (e.key === "Enter") searchUser(); });
 renderTodo();
 if (bestScore !== 0) {
   $("bestScore").innerText = "最佳成绩：" + bestScore + " 次";
+}
+
+// 恢复上次记住的主题
+if (localStorage.getItem(THEME_KEY) === "dark") {
+  document.body.classList.add("dark");
+  $("btnTheme").textContent = "☀️ 切回白天";
 }
