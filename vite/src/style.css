@@ -29,7 +29,8 @@ body.green {
 }
 
 .card {
-  max-width: 520px;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
   padding: 40px 30px;
   background: #fff;
@@ -136,12 +137,29 @@ button.btn-sm {
   font-size: 12px;
 }
 
-button.btn-done { background: var(--green); }
-button.btn-done:hover { background: #059669; }
-button.btn-del { background: var(--red); }
-button.btn-del:hover { background: #dc2626; }
-button.btn-edit { background: var(--amber); }
-button.btn-edit:hover { background: #d97706; }
+button.btn-done {
+  background: var(--green);
+}
+
+button.btn-done:hover {
+  background: #059669;
+}
+
+button.btn-del {
+  background: var(--red);
+}
+
+button.btn-del:hover {
+  background: #dc2626;
+}
+
+button.btn-edit {
+  background: var(--amber);
+}
+
+button.btn-edit:hover {
+  background: #d97706;
+}
 
 input {
   margin: 8px;
@@ -188,7 +206,7 @@ input {
   border-radius: 999px;
 }
 
-.progress > div {
+.progress>div {
   width: 0;
   height: 100%;
   background: var(--green);
@@ -209,4 +227,45 @@ input {
 
 .hidden {
   display: none;
+}
+
+/* 手机（屏幕宽度 ≤ 480px）时，套用这套专属样式 */
+@media (max-width: 480px) {
+  body {
+    padding: 16px 10px;
+  }
+
+  .card {
+    padding: 24px 16px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}
+
+/* ---------- 第 17 关 · 响应式网格：宽屏两列，窄屏一列 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: left;
+}
+
+.grid .block {
+  margin-top: 0;
+  padding: 20px;
+  background: #f8fafc;
+  border: 1px solid var(--blue-line);
+  border-radius: 16px;
+}
+
+.grid .block h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
