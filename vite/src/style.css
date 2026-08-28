@@ -57,6 +57,7 @@ body.dark input {
   background: var(--card-bg);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.8s ease;
 }
 
 h1,
@@ -66,6 +67,7 @@ h2 {
 
 h1 {
   margin: 10px 0;
+  animation: breathe 4s ease-in-out infinite;
 }
 
 h2 {
@@ -150,6 +152,10 @@ button {
 button:hover {
   background: #1d4ed8;
   transform: translateY(-2px);
+}
+
+button:active {
+  transform: scale(0.96);
 }
 
 button.btn-sm {
@@ -288,5 +294,27 @@ input {
 @media (max-width: 700px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 第 19 关 · CSS 动画 ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    color: var(--blue-deep);
+  }
+  50% {
+    color: var(--pink);
   }
 }
