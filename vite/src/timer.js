@@ -3,14 +3,22 @@ import { $, on } from "./utils.js";
 let timerId = null;
 let leftTime = 0;
 
-function startTimer() {
-  const seconds = Number($("timerInput").value);
-  if (timerId !== null) clearInterval(timerId);
+function validateTimer() {
+  const val = $("timerInput").value.trim();       // 拿到输入值并去空格
+  const ok = /^\d+$/.test(val) && Number(val) > 0; // 纯正整数？
+  $("timerInput").classList.toggle("invalid", !ok); // 非法就加红框
+  $("btnStartTimer").disabled = !ok;               // 非法就禁用开始按钮
+  return ok;                                       // 把"合不合法"返回给调用者
+}
 
-  if (isNaN(seconds) || seconds <= 0) {
-    $("timerDisplay").innerText = "请输入一个正数";
+function startTimer() {
+  if (!validateTimer()) {
+    $("timerDisplay").innerText = "请输入一个正整数（秒）";
     return;
   }
+  if (timerId !== null) clearInterval(timerId);
+
+  const seconds = Number($("timerInput").value);
 
   leftTime = seconds;
   $("timerDisplay").innerText = leftTime + " 秒";
@@ -38,4 +46,5 @@ function resetTimer() {
 export function initTimer() {
   on("btnStartTimer", "click", startTimer);
   on("btnResetTimer", "click", resetTimer);
+  on("timerInput", "input", validateTimer);   // ← 新增：每敲一个字就校验
 }

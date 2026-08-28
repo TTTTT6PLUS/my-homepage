@@ -15,11 +15,21 @@ function changeColor() {
   document.body.classList.toggle("green", isGreen);
 }
 
-function useInput() {
+function validateName() {
   const name = $("nameInput").value.trim();
-  if (!name) return;
+  const tooLong = name.length > 20;                  // 超长 → 算"错误"
+  const ok = name.length >= 1 && !tooLong;           // 非空 且 不超长 才算合法
+  $("nameInput").classList.toggle("invalid", tooLong); // 只有超长才加红框
+  $("btnConfirmName").disabled = !ok;                  // 空 或 超长 都禁用按钮
+  return ok;
+}
+
+function useInput() {
+  if (!validateName()) return;              // 用校验函数统一拦
+  const name = $("nameInput").value.trim();
   $("myName").innerText = "你好，我是" + name;
   $("nameInput").value = "";
+  validateName();                           // 清空后让按钮回到禁用状态
 }
 
 export function initGreet() {
@@ -27,4 +37,5 @@ export function initGreet() {
   on("btnRename", "click", changeName);
   on("btnSkin", "click", changeColor);
   on("btnConfirmName", "click", useInput);
+  on("nameInput", "input", validateName);   // ← 新增：每敲一个字就校验
 }
