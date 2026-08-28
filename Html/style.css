@@ -32,7 +32,7 @@ body.green {
   max-width: 520px;
   margin: 0 auto;
   padding: 40px 30px;
-  background: #fff;
+  background: hsl(55, 85%, 84%);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
