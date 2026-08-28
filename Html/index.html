@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的个人主页</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <img class="avatar" src="../avatar.svg" alt="我的头像">
+    <h1 id="myName">你好，我是 TTTTT6</h1>
+    <p class="intro">我是一名正在学习前端开发的新手，喜欢把想法变成好看的网页。这里是我的个人主页，未来会越来越棒的！请多多指教。</p>
+
+    <h2>关于我</h2>
+    <ul class="about-list">
+      <li>🎓 正在学：HTML / CSS / JavaScript</li>
+      <li>🌟 目标：成为一名前端工程师</li>
+      <li>🏠 坐标：中国</li>
+      <li>💬 一句话：热爱学习，乐于分享</li>
+    </ul>
+
+    <div>
+      <span class="tag">睡觉</span>
+      <span class="tag">游戏</span>
+      <span class="tag">音乐</span>
+      <span class="tag">编程</span>
+    </div>
+
+    <div class="block">
+      <a href="mailto:xxx@example.com">📧 邮箱</a>
+      <a href="https://github.com/" target="_blank">🐙 GitHub</a>
+    </div>
+
+    <div class="block">
+      <button id="btnHello">点我打招呼</button>
+      <button id="btnRename">改个名字</button>
+      <button id="btnSkin">换个肤色</button>
+    </div>
+
+    <div class="block">
+      <input id="nameInput" type="text" placeholder="输入你的新名字">
+      <button id="btnConfirmName">确认改名</button>
+      <p id="quoteText">点下面的按钮，抽一句摸鱼语录~</p>
+      <button id="btnQuote">随机摸鱼语录</button>
+    </div>
+
+    <div class="block">
+      <h2>待办清单</h2>
+      <input id="todoInput" type="text" placeholder="输入要做的事">
+      <button id="btnAddTodo">添加</button>
+      <button id="btnCompleteAll">全部完成</button>
+      <button id="btnClearDone">清除已完成</button>
+      <button id="btnExport">导出为文字</button>
+      <p id="exportResult"></p>
+      <p id="todoCount">未完成：0 件</p>
+      <div class="progress"><div id="todoBar"></div></div>
+      <p id="todoPercent">完成率：0%</p>
+      <ul id="todoList"></ul>
+    </div>
+
+    <div class="block">
+      <h2>倒计时器</h2>
+      <input id="timerInput" type="text" placeholder="输入秒数">
+      <button id="btnStartTimer">开始</button>
+      <button id="btnResetTimer">重置</button>
+      <p id="timerDisplay">0 秒</p>
+    </div>
+
+    <div class="block">
+      <h2>幸运抽签</h2>
+      <input id="namePool" type="text" placeholder="输入一个名字">
+      <button id="btnAddName">加入名单</button>
+      <button id="btnDraw">开始抽签</button>
+      <p id="drawResult">点「开始抽签」试试手气~</p>
+      <ul id="poolList"></ul>
+    </div>
+
+    <div class="block">
+      <h2>随机狗狗</h2>
+      <button id="btnDog">来一只狗狗</button>
+      <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
+      <img id="dogImg" class="dog-img hidden" alt="随机狗狗">
+    </div>
+
+    <div class="block">
+      <h2>GitHub 用户查询</h2>
+      <input id="ghName" type="text" placeholder="输入 GitHub 用户名">
+      <button id="btnSearchUser">查询</button>
+      <p id="ghResult">输入用户名，看看 TA 的资料~</p>
+      <img id="ghAvatar" class="gh-avatar hidden" alt="头像">
+    </div>
+
+    <div class="block">
+      <h2>猜数字游戏</h2>
+      <p id="guessHint">我想了一个 1~100 之间的数字，来猜猜看！</p>
+      <input id="guessInput" type="text" placeholder="输入你的猜测">
+      <button id="btnGuess">猜！</button>
+      <button id="btnRestart">重新开始</button>
+      <p id="guessResult"></p>
+      <p id="bestScore">最佳成绩：暂无</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
