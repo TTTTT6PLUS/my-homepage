@@ -1,9 +1,27 @@
 import { $, on, makeButton } from "./utils.js";
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+// 新增两个状态变量，记住"现在筛什么、要不要排序"
+let filterMode = "all";        // "all"全部 | "active"未完成 | "done"已完成
+let showActiveFirst = false;   // true = 未完成的排前面
 
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function getVisibleTasks() {
+  // 1. 先按筛选模式过滤
+  let list = tasks.filter((t) => {
+    if (filterMode === "active") return !t.done;  // 只看未完成
+    if (filterMode === "done") return t.done;     // 只看已完成
+    return true;                                  // 其余情况：全部保留
+  });
+
+  // 2. 如果需要，再把未完成的排到前面
+  if (showActiveFirst) {
+    list.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
+  }
+  return list;
 }
 
 function addTodo() {
@@ -39,7 +57,8 @@ function editTodo(i) {
 function renderTodo() {
   const list = $("todoList");
   list.innerHTML = "";
-  tasks.forEach((item, i) => {
+  getVisibleTasks().forEach((item) => {   // 用"筛选+排序后"的列表来渲染
+    const i = tasks.indexOf(item);        // 找到它在真正的 tasks 数组里的位置
     const li = document.createElement("li");
     li.textContent = item.text;
     li.classList.toggle("todo-done", item.done);
@@ -89,11 +108,25 @@ function exportTasks() {
     .join(" · ");
 }
 
+function setFilter(mode) {
+  filterMode = mode;      // 更新"筛选状态"
+  renderTodo();           // 重新画一遍列表
+}
+
+function toggleSort() {
+  showActiveFirst = !showActiveFirst;  // 翻转"排序"开关
+  renderTodo();
+}
+
 export function initTodo() {
   on("btnAddTodo", "click", addTodo);
   on("btnCompleteAll", "click", completeAll);
   on("btnClearDone", "click", clearDone);
   on("btnExport", "click", exportTasks);
   on("todoInput", "keydown", (e) => { if (e.key === "Enter") addTodo(); });
+  on("btnFilterAll", "click", () => setFilter("all"));
+  on("btnFilterActive", "click", () => setFilter("active"));
+  on("btnFilterDone", "click", () => setFilter("done"));
+  on("btnSortActive", "click", toggleSort);
   renderTodo();
 }
