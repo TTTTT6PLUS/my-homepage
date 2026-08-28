@@ -8,7 +8,9 @@ import { initDraw } from "./draw.js";
 import { initDog } from "./dog.js";
 import { initGithub } from "./github.js";
 import { initGuess } from "./guess.js";
+import { initTheme } from "./theme.js";
 
+initTheme();
 initGreet();
 initQuote();
 initTodo();

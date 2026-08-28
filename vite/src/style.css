@@ -10,6 +10,10 @@
   --red: #ef4444;
   --pink: #ec4899;
   --track: #e2e8f0;
+  --bg: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  --card-bg: #ffffff;
+  --block-bg: #f8fafc;
+  --todo-bg: #e0f2fe;
 }
 
 * {
@@ -21,11 +25,28 @@ body {
   padding: 40px 20px;
   text-align: center;
   font-family: "微软雅黑", "PingFang SC", sans-serif;
-  background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  background: var(--bg);
 }
 
 body.green {
   background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+}
+
+/* ---------- 第 18 关 · 深色模式：覆盖白天变量为深色值 ---------- */
+body.dark {
+  --bg: linear-gradient(135deg, #0f172a, #1e293b);
+  --card-bg: #1e293b;
+  --block-bg: #0f172a;
+  --todo-bg: #334155;
+  --blue-deep: #93c5fd;
+  --text: #cbd5e1;
+  --track: #334155;
+}
+
+body.dark input {
+  color: #e2e8f0;
+  background: #0f172a;
+  border-color: #334155;
 }
 
 .card {
@@ -33,7 +54,7 @@ body.green {
   max-width: 900px;
   margin: 0 auto;
   padding: 40px 30px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
@@ -189,7 +210,7 @@ input {
   margin: 6px 0;
   padding: 10px 14px;
   color: var(--blue-deep);
-  background: #e0f2fe;
+  background: var(--todo-bg);
   border-radius: 10px;
 }
 
@@ -255,7 +276,7 @@ input {
 .grid .block {
   margin-top: 0;
   padding: 20px;
-  background: #f8fafc;
+  background: var(--block-bg);
   border: 1px solid var(--blue-line);
   border-radius: 16px;
 }
