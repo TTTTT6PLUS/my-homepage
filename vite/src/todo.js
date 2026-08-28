@@ -57,20 +57,38 @@ function editTodo(i) {
 function renderTodo() {
   const list = $("todoList");
   list.innerHTML = "";
-  getVisibleTasks().forEach((item) => {   // 用"筛选+排序后"的列表来渲染
-    const i = tasks.indexOf(item);        // 找到它在真正的 tasks 数组里的位置
+  getVisibleTasks().forEach((item) => {
+    const i = tasks.indexOf(item);
     const li = document.createElement("li");
+    li.dataset.index = i;              // ① 把"真实下标"刻在 li 身上
     li.textContent = item.text;
     li.classList.toggle("todo-done", item.done);
     li.append(
-      makeButton("完成", "btn-sm btn-done", () => toggleDone(i)),
-      makeButton("删除", "btn-sm btn-del", () => deleteTodo(i)),
-      makeButton("编辑", "btn-sm btn-edit", () => editTodo(i))
+      makeButton("完成", "btn-sm btn-done"),   // ② 不再传第三个参数 → 不绑事件
+      makeButton("删除", "btn-sm btn-del"),
+      makeButton("编辑", "btn-sm btn-edit")
     );
-    li.addEventListener("dblclick", () => toggleDone(i));
     list.appendChild(li);
   });
   updateCount();
+}
+
+function handleTodoClick(e) {
+  const btn = e.target.closest("button");   // 被点的到底是不是按钮？
+  if (!btn) return;                          // 点的是 li 文字 → 不是按钮，忽略
+
+  const li = btn.closest("li");              // 这个按钮属于哪一条任务
+  const i = Number(li.dataset.index);        // 取回这条任务在 tasks 里的真实下标
+
+  if (btn.classList.contains("btn-done")) toggleDone(i);
+  else if (btn.classList.contains("btn-del")) deleteTodo(i);
+  else if (btn.classList.contains("btn-edit")) editTodo(i);
+}
+
+function handleTodoDblclick(e) {
+  const li = e.target.closest("li");         // 双击的是哪一条
+  if (!li) return;
+  toggleDone(Number(li.dataset.index));      // 双击 = 切换完成状态
 }
 
 function updateCount() {
@@ -128,5 +146,7 @@ export function initTodo() {
   on("btnFilterActive", "click", () => setFilter("active"));
   on("btnFilterDone", "click", () => setFilter("done"));
   on("btnSortActive", "click", toggleSort);
+  on("todoList", "click", handleTodoClick);
+  on("todoList", "dblclick", handleTodoDblclick);
   renderTodo();
 }

@@ -6,6 +6,6 @@ export function makeButton(text, className, onClick) {
   const btn = document.createElement("button");
   btn.textContent = text;
   btn.className = className;
-  btn.addEventListener("click", onClick);
+  if (onClick) btn.addEventListener("click", onClick);   // 有传 onClick 才绑
   return btn;
 }

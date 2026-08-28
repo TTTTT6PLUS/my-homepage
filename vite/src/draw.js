@@ -5,11 +5,26 @@ let pool = [];
 function renderPool() {
   const list = $("poolList");
   list.innerHTML = "";
-  pool.forEach((n) => {
+  pool.forEach((n, i) => {
     const li = document.createElement("li");
+    li.dataset.index = i;                        // 打标记：这条是第几个
     li.textContent = n;
+    li.append(makeButton("删除", "btn-sm btn-del")); // 加删除按钮，不绑事件
     list.appendChild(li);
   });
+}
+
+function deleteName(i) {
+  pool.splice(i, 1);
+  renderPool();
+}
+
+function handlePoolClick(e) {
+  const btn = e.target.closest("button");   // 点的是不是按钮
+  if (!btn) return;
+  const li = btn.closest("li");             // 属于哪一条
+  const i = Number(li.dataset.index);       // 取回下标
+  if (btn.classList.contains("btn-del")) deleteName(i);
 }
 
 function addName() {
@@ -35,4 +50,5 @@ function startDraw() {
 export function initDraw() {
   on("btnAddName", "click", addName);
   on("btnDraw", "click", startDraw);
+  on("poolList", "click", handlePoolClick);   // ← 新增这一行
 }
