@@ -139,11 +139,11 @@
       }
 
      #todoList li {
-        background: oklch(87.047% 0.05516 285.181);
+        background: #e0f2fe;
         margin: 6px 0;
         padding: 10px 14px;
         border-radius: 10px;
-        color: lab(0.73% -0.23 -1.79);
+        color: #1e3a8a;
       }
 
       .del-btn {
@@ -178,6 +178,48 @@
       .edit-btn:hover {
         background: #d97706;
       }
+
+      /* ---------- 深色模式 ---------- */
+      body.dark {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+      }
+      body.dark .card {
+        background: #1e293b;
+      }
+      body.dark h1,
+      body.dark h2 {
+        color: #93c5fd;
+      }
+      body.dark .intro,
+      body.dark .about-list li {
+        color: #cbd5e1;
+      }
+      body.dark .about-list li {
+        border-bottom-color: #334155;
+      }
+      body.dark .tag {
+        background: #334155;
+        color: #93c5fd;
+      }
+      body.dark .tag:hover {
+        background: #3b82f6;
+        color: #ffffff;
+      }
+      body.dark a {
+        color: #60a5fa;
+      }
+      body.dark .avatar {
+        border-color: #334155;
+      }
+      body.dark input {
+        color: #e2e8f0;
+        background: #0f172a;
+        border-color: #334155;
+      }
+      body.dark #todoList li {
+        background: #334155;
+        color: #93c5fd;
+      }
     </style>
   </head>
 
@@ -187,6 +229,7 @@
     <div class="card">
       <!-- div 是一个「盒子」，用来装东西 -->
       <img class="avatar" src="avatar.svg" alt="我的头像">
+      <button id="btnTheme" onclick="toggleTheme()">🌙 切换主题</button>
       <h1 id="myName">你好，我是 TTTTT6</h1>
       <!-- h1 是最大的一级标题 -->
 
@@ -306,6 +349,19 @@
 
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       renderTodo();   // 页面一打开，就把之前存的待办显示出来
+
+      // ---------- 深色模式 ----------
+      function toggleTheme() {
+        let dark = document.body.classList.toggle("dark");
+        document.getElementById("btnTheme").textContent = dark ? "☀️ 切回白天" : "🌙 切换主题";
+        localStorage.setItem("myThemeOld", dark ? "dark" : "light");
+      }
+
+      // 进页面时，恢复上次记住的主题
+      if (localStorage.getItem("myThemeOld") === "dark") {
+        document.body.classList.add("dark");
+        document.getElementById("btnTheme").textContent = "☀️ 切回白天";
+      }
 
       function addTodo() {
        let task = document.getElementById("todoInput").value;
