@@ -261,6 +261,14 @@
       <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
       <img id="dogImg" alt="随机狗狗" style="max-width: 300px; border-radius: 12px; margin-top: 12px; display: none;">
     </div>
+
+        <div style="margin-top: 24px;">
+      <h2>GitHub 用户查询</h2>
+      <input id="ghName" type="text" placeholder="输入 GitHub 用户名">
+      <button onclick="searchUser()">查询</button>
+      <p id="ghResult">输入用户名，看看 TA 的资料~</p>
+      <img id="ghAvatar" alt="头像" style="width: 80px; border-radius: 50%; margin-top: 12px; display: none;">
+    </div>
   </div>          
 </div>            
 
@@ -496,6 +504,30 @@
        } catch (err) {
           document.getElementById("dogStatus").innerText = "抓狗失败，检查网络~";
        }
+    }
+
+    async function searchUser() {
+      let name = document.getElementById("ghName").value;
+      if (name === "") {
+        document.getElementById("ghResult").innerText = "先输入一个用户名";
+        return;
+      }
+      document.getElementById("ghResult").innerText = "查询中...";
+      try {
+        let res = await fetch(`https://api.github.com/users/${name}`);
+        if (!res.ok) {
+          throw new Error("没找到");   // 404 就主动抛错，跳进 catch
+        }
+        let data = await res.json();
+        let avatar = document.getElementById("ghAvatar");
+        avatar.src = data.avatar_url;   // 头像网址
+        avatar.style.display = "block";
+        document.getElementById("ghResult").innerText =
+          `用户名：${data.login}，公开仓库：${data.public_repos} 个，粉丝：${data.followers} 人`;
+      } catch (err) {
+        document.getElementById("ghResult").innerText = "没找到这个用户，检查名字~";
+        document.getElementById("ghAvatar").style.display = "none";  // 藏掉旧头像
+      }
     }
     </script>
   </body>
