@@ -234,7 +234,13 @@
         <button onclick="addTodo()">添加</button>
         <button onclick="completeAll()">全部完成</button>
         <button onclick="clearDone()">清除已完成</button>
+        <button onclick="exportTasks()">导出为文字</button>
+        <p id="exportResult"></p>
         <p id="todoCount">未完成：0 件</p>
+        <div style="max-width: 320px; margin: 8px auto; height: 12px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+          <div id="todoBar" style="height: 100%; width: 0%; background: #10b981; transition: width 0.3s;"></div>
+        </div>
+        <p id="todoPercent">完成率：0%</p>
         <ul id="todoList"></ul>
     </div>
 
@@ -269,6 +275,16 @@
       <p id="ghResult">输入用户名，看看 TA 的资料~</p>
       <img id="ghAvatar" alt="头像" style="width: 80px; border-radius: 50%; margin-top: 12px; display: none;">
     </div>
+
+        <div style="margin-top: 24px;">
+      <h2>猜数字游戏</h2>
+      <p id="guessHint">我想了一个 1~100 之间的数字，来猜猜看！</p>
+      <input id="guessInput" type="text" placeholder="输入你的猜测">
+      <button onclick="guessNumber()">猜！</button>
+      <button onclick="restartGame()">重新开始</button>
+      <p id="guessResult"></p>
+      <p id="bestScore">最佳成绩：暂无</p>
+    </div>
   </div>          
 </div>            
 
@@ -284,6 +300,9 @@
       let timerId = null;   // 定时器的“身份证”，null 表示没在计时
       let leftTime = 0;     // 还剩多少秒
       let pool = [];   // 抽签名单（一个字符串数组）
+      let secret = Math.floor(Math.random() * 100) + 1;   // 秘密数字（1~100）
+      let guessCount = 0;                                  // 猜了几次
+      let bestScore = Number(localStorage.getItem("bestScore")) || 0;   // 最佳成绩
 
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       renderTodo();   // 页面一打开，就把之前存的待办显示出来
@@ -335,6 +354,10 @@
            li.style.textDecoration = "line-through";  // 做完了就划线
          }
 
+           li.addEventListener("dblclick", () => {
+            toggleDone(i);
+           });
+
          let doneBtn = document.createElement("button");
          doneBtn.textContent = "完成";
          doneBtn.className = "done-btn";
@@ -367,6 +390,15 @@
       function updateCount() {
        let active = tasks.filter(t => t.done === false);  // 只留没完成的
        document.getElementById("todoCount").innerText = "未完成：" + active.length + " 件";
+       updateProgress();   // ← 加这一行
+      }
+
+      function updateProgress() {
+        let doneCount = tasks.reduce((acc, t) => acc + (t.done ? 1 : 0), 0);  // 数出已完成的条数
+        let total = tasks.length;
+        let percent = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+        document.getElementById("todoPercent").innerText = "完成率：" + percent + "%";
+        document.getElementById("todoBar").style.width = percent + "%";
       }
 
       function randomQuote() {
@@ -415,6 +447,15 @@
        renderTodo();
       }
 
+      function exportTasks() {
+        if (tasks.length === 0) {
+        document.getElementById("exportResult").innerText = "还没有待办哦";
+        return;
+        }
+        let list = tasks.map(t => (t.done ? "[✓] " : "[ ] ") + t.text);
+        document.getElementById("exportResult").innerText = list.join(" · ");
+      }
+      
       function completeAll() {
        tasks.forEach(t => {
           t.done = true;
@@ -528,6 +569,45 @@
         document.getElementById("ghResult").innerText = "没找到这个用户，检查名字~";
         document.getElementById("ghAvatar").style.display = "none";  // 藏掉旧头像
       }
+    }
+
+    document.getElementById("ghName").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        searchUser();
+      }
+    });
+
+    function guessNumber() {
+      let guess = Number(document.getElementById("guessInput").value);
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        document.getElementById("guessResult").innerText = "请输入 1~100 之间的数字";
+        return;
+      }
+      guessCount++;
+      if (guess > secret) {
+        document.getElementById("guessResult").innerText = guess + " 太大了，再小一点~";
+      } else if (guess < secret) {
+        document.getElementById("guessResult").innerText = guess + " 太小了，再大一点~";
+      } else {
+        document.getElementById("guessResult").innerText = "猜对了！你用了 " + guessCount + " 次";
+        if (bestScore === 0 || guessCount < bestScore) {
+          bestScore = guessCount;
+          localStorage.setItem("bestScore", guessCount);   // 存新纪录
+        }
+        document.getElementById("bestScore").innerText = "最佳成绩：" + bestScore + " 次";
+      }
+      document.getElementById("guessInput").value = "";
+    }
+
+    function restartGame() {
+      secret = Math.floor(Math.random() * 100) + 1;   // 重新随机一个数字
+      guessCount = 0;
+      document.getElementById("guessResult").innerText = "";
+      document.getElementById("guessInput").value = "";
+    }
+
+    if (bestScore !== 0) {
+      document.getElementById("bestScore").innerText = "最佳成绩：" + bestScore + " 次";
     }
     </script>
   </body>
