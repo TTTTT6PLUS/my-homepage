@@ -9,8 +9,10 @@ import { initDog } from "./dog.js";
 import { initGithub } from "./github.js";
 import { initGuess } from "./guess.js";
 import { initTheme } from "./theme.js";
+import { initWin } from "./win.js";
 
 initTheme();
+initWin();
 initGreet();
 initQuote();
 initTodo();

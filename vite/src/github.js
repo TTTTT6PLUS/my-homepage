@@ -1,4 +1,4 @@
-import { $, on } from "./utils.js";
+import { $, on, debounce } from "./utils.js";
 
 let loading = false;   // 新增：防连点开关
 
@@ -49,4 +49,5 @@ async function searchUser() {
 export function initGithub() {
   on("btnSearchUser", "click", searchUser);
   on("ghName", "keydown", (e) => { if (e.key === "Enter") searchUser(); });
+  on("ghName", "input", debounce(searchUser, 500));   // ← 新增这一行
 }
