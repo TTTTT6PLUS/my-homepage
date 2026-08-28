@@ -7,13 +7,13 @@ export function initTheme() {
   // 1. 进页面时，先读上次记住的主题
   if (localStorage.getItem(KEY) === "dark") {
     document.body.classList.add("dark");
-    $("#btnTheme").textContent = "☀️ 切回白天";
+    $("btnTheme").textContent = "☀️ 切回白天";
   }
 
   // 2. 点按钮时切换主题
-  $("#btnTheme").addEventListener("click", () => {
+  $("btnTheme").addEventListener("click", () => {
     const isDark = document.body.classList.toggle("dark");
-    $("#btnTheme").textContent = isDark ? "☀️ 切回白天" : "🌙 切换主题";
+    $("btnTheme").textContent = isDark ? "☀️ 切回白天" : "🌙 切换主题";
     localStorage.setItem(KEY, isDark ? "dark" : "light");
   });
 }
