@@ -1,6 +1,10 @@
-import { $, on } from "./utils.js";
+import { $, on, makeButton } from "./utils.js";
 
-let pool = [];
+let pool = JSON.parse(localStorage.getItem("pool")) || [];
+
+function savePool() {
+  localStorage.setItem("pool", JSON.stringify(pool));
+}
 
 function renderPool() {
   const list = $("poolList");
@@ -16,6 +20,7 @@ function renderPool() {
 
 function deleteName(i) {
   pool.splice(i, 1);
+  savePool();   // ← 新增这一行
   renderPool();
 }
 
@@ -32,6 +37,7 @@ function addName() {
   if (!name) return;
   pool.push(name);
   $("namePool").value = "";
+  savePool();   // ← 新增这一行
   renderPool();
 }
 
@@ -51,4 +57,5 @@ export function initDraw() {
   on("btnAddName", "click", addName);
   on("btnDraw", "click", startDraw);
   on("poolList", "click", handlePoolClick);   // ← 新增这一行
+  renderPool();   // ← 新增：页面打开时，把已存的名单画出来
 }
