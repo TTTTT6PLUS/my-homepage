@@ -11,6 +11,10 @@ let filterMode = "all";
 let showActiveFirst = false;
 // ↑ 记录"是否开启未完成优先排序"
 
+let draggedIndex = null;
+// ↑ 记录"正在拖动的那条任务"的真实下标；没在拖时是 null。
+//   （用模块级变量，因为拖拽的每一步事件都要共享"谁在被拖"这份信息）
+
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
   // ↑ 把 tasks 数组转成字符串，存进 localStorage（因为 storage 只能存字符串）
@@ -91,6 +95,8 @@ function renderTodo() {
     // ↑ 找到这条任务在原数组里的真实下标（因为显示顺序可能被排序改变）
     const li = document.createElement("li");
     // ↑ 为每条任务新建一个 <li>
+    li.draggable = true;   
+    // ↑ 设置这一项可以被拖起来（HTML5 拖拽开关）
     li.dataset.index = i;
     // ↑ 把"真实下标"记录在 li 的自定义属性 data-index 上，供点击时取回
     li.textContent = item.text;
@@ -136,6 +142,70 @@ function handleTodoDblclick(e) {
   const li = e.target.closest("li");
   if (!li) return;
   toggleDone(Number(li.dataset.index));
+}
+
+function handleDragStart(e) {
+  // ↑ 开始拖拽时触发：记下"拖的是哪一条"，给它加个半透明效果
+  const li = e.target.closest("li");
+  // ↑ 被拖的元素可能是 li 也可能是里面的小按钮，closest 统一找到所属的 li
+  if (!li) return;
+  draggedIndex = Number(li.dataset.index);
+  // ↑ 读回真实下标，存进模块变量，后面 drop 时要用
+  li.classList.add("dragging");
+  // ↑ 加 .dragging 类 → CSS 把它变半透明，用户一眼看出拖的是谁
+  e.dataTransfer.effectAllowed = "move";
+  // ↑ 告诉系统这次操作是"移动"，鼠标会显示移动图标
+}
+
+function handleDragOver(e) {
+  // ↑ 拖到别的条目上方时反复触发（高频事件）
+  e.preventDefault();
+  // ↑ 关键一步！浏览器默认"禁止把东西放下"，必须阻止这个默认行为，
+  //   drop 事件才有机会触发
+  const li = e.target.closest("li");
+  if (!li) return;
+  document.querySelectorAll("#todoList li").forEach((el) => el.classList.remove("drag-over"));
+  // ↑ 先把所有条目的"即将放入"标记清掉，保证同一时刻只有一个高亮
+  if (Number(li.dataset.index) !== draggedIndex) {
+    // ↑ 只有悬停在自己以外的条目上，才给放入提示
+    li.classList.add("drag-over");
+    // ↑ 给目标条目加 .drag-over → 顶部画一条蓝线，示意"会落到这里"
+  }
+}
+
+function handleDrop(e) {
+  // ↑ 松手放下的瞬间触发：真正把任务从原位置挪到目标位置
+  e.preventDefault();
+  const li = e.target.closest("li");
+  if (!li || draggedIndex === null) return;
+  // ↑ 找不到目标、或压根没在拖，就啥也不做
+
+  let targetIndex = Number(li.dataset.index);
+  // ↑ 读出"要放到哪"，先记下目标下标
+
+  const [moved] = tasks.splice(draggedIndex, 1);
+  // ↑ splice(下标,1) 从原位删掉 1 个元素，并返回"被删元素组成的数组"；
+  //   [moved] 用解构语法把数组里那一个元素取出来
+  if (targetIndex > draggedIndex) targetIndex--;
+  // ↑ 因为刚删掉一个，它后面的下标整体前移了一位，所以这里要减 1 校准
+  tasks.splice(targetIndex, 0, moved);
+  // ↑ 把 moved 插到目标位置；第二个参数 0 表示"只插入、不删除"
+
+  draggedIndex = null;
+  saveTasks();
+  // ↑ 存盘，让新顺序刷新网页后也能保留
+  renderTodo();
+  // ↑ 按新顺序重新渲染
+}
+
+function handleDragEnd(e) {
+  // ↑ 拖拽结束（无论有没有成功放下）都会触发，专门用来收尾清理
+  document.querySelectorAll(".dragging, .drag-over").forEach((el) =>
+    el.classList.remove("dragging", "drag-over")
+  );
+  // ↑ 把页面上所有拖拽相关样式一次性清掉
+  draggedIndex = null;
+  // ↑ 重置"谁在被拖"的记录
 }
 
 function updateCount() {
@@ -216,6 +286,13 @@ export function initTodo() {
   // ↑ 事件委托：列表上点任何按钮都由 handleTodoClick 统一分发
   on("todoList", "dblclick", handleTodoDblclick);
   // ↑ 双击列表项也切换完成状态
+
+  on("todoList", "dragstart", handleDragStart);
+  on("todoList", "dragover", handleDragOver);
+  on("todoList", "drop", handleDrop);
+  on("todoList", "dragend", handleDragEnd);
+  // ↑ 拖拽四件套（开始→经过→放下→结束），都走事件委托绑到整个列表上
+
   renderTodo();
   // ↑ 首次渲染：把 localStorage 里读到的任务画出来
 }

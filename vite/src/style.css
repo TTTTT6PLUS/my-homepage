@@ -277,6 +277,18 @@ input {
   color: var(--blue-deep);
   background: var(--todo-bg);
   border-radius: 10px;
+  cursor: grab;
+  /* ↑ 悬停显示"可以抓"的小手，提示用户可以拖拽排序 */
+}
+
+#todoList li.dragging {
+  /* ↑ 正在被拖动的条目：变半透明，一眼看出拖的是谁 */
+  opacity: 0.4;
+}
+
+#todoList li.drag-over {
+  /* ↑ 松手后将要落入的位置：顶部画一条蓝色参考线 */
+  border-top: 3px solid var(--blue);
 }
 
 .todo-done {
