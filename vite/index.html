@@ -104,7 +104,17 @@
           <div id="todoBar"></div>
           <!-- ↑ 进度条：里面这个 div 的宽度会随完成率变化 -->
         </div>
-        <p id="todoPercent">完成率：0%</p>
+        <div class="ring-wrap">
+          <!-- ↑ 环的外框：负责居中 + 让数字叠在环心上 -->
+          <svg class="ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <!-- ↑ 底环（灰色轨道） -->
+            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"></circle>
+            <!-- ↑ 进度环（绿色弧） -->
+          </svg>
+          <span class="ring-label" id="ringLabel">0%</span>
+          <!-- ↑ 环中心的大数字，JS 会实时更新它 -->
+        </div>
         <ul id="todoList"></ul>
         <!-- ↑ 空的待办列表，JS 会往里动态塞 <li> -->
       </div>

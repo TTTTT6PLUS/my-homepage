@@ -37,6 +37,7 @@
 * {
   box-sizing: border-box;
 }
+
 /* ↑ 通配符 *：所有元素都算上内边距和边框的宽度，布局更好算 */
 
 body {
@@ -55,6 +56,7 @@ body {
 body.green {
   background: linear-gradient(135deg, #dcfce7, #bbf7d0);
 }
+
 /* ↑ 当 body 带 .green 类时，背景换成绿色渐变（换个肤色的效果） */
 
 /* ---------- 第 18 关 · 深色模式：覆盖白天变量为深色值 ---------- */
@@ -100,6 +102,7 @@ h1,
 h2 {
   color: var(--blue-deep);
 }
+
 /* ↑ 一级和二级标题都用深蓝色 */
 
 h1 {
@@ -139,6 +142,7 @@ h2 {
 .block {
   margin-top: 24px;
 }
+
 /* ↑ 功能块之间的上间距 */
 
 .avatar {
@@ -306,6 +310,76 @@ input {
   border-radius: 999px;
 }
 
+.ring {
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin: 12px auto;
+  transform: rotate(-90deg);
+  /* ↑ 逆时针转 90°：让圆弧从"正上方 12 点"开始，
+       而不是 SVG 默认的"3 点钟"方向，这样更像进度表 */
+}
+
+.ring circle {
+  /* ↑ 两个圆共用的基础样式 */
+  fill: none;
+  /* ↑ 空心，不填充 */
+  stroke-width: 12;
+  /* ↑ 描边 12px */
+}
+
+.ring-bg {
+  stroke: var(--track);
+  /* ↑ 底环用"轨道灰"，深色模式下自动变深 */
+}
+
+.ring-fg {
+  stroke: var(--green);
+  /* ↑ 进度环用"完成绿"，和进度条颜色统一 */
+  stroke-linecap: round;
+  /* ↑ 弧的两端是圆头，更好看 */
+  stroke-dasharray: 326.7;
+  /* ↑ 把描边设成长度=周长的虚线，效果是"能画满一整个环" */
+  transition: stroke-dashoffset 0.4s ease;
+  /* ↑ 弧长变化时，用 0.4 秒平滑过渡，不再是瞬间跳变 */
+  stroke-dashoffset: 163;
+  /* ↑ 先固定"藏掉半圈"，于是露出一半绿色弧（先讲原理）。
+       下一步 JS 会把它改成随完成率动态变化的值 */
+}
+
+.ring-wrap {
+  position: relative;
+  /* ↑ 变成定位参照点，好让里面的 label 绝对定位相对它 */
+  width: 120px;
+  height: 120px;
+  margin: 12px auto;
+  /* ↑ 外框负责水平居中 */
+}
+
+.ring-wrap .ring {
+  margin: 0;
+  /* ↑ 环不再自己留白/居中，统统交给外框（覆盖掉 .ring 的 margin:12px auto） */
+}
+
+.ring-label {
+  position: absolute;
+  /* ↑ 绝对定位，脱离文档流，叠在 SVG 正上方 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* ↑ 四边都贴住外框，等于铺满整个 120×120 */
+  display: flex;
+  align-items: center;
+  /* ↑ 垂直居中 */
+  justify-content: center;
+  /* ↑ 水平居中 */
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--blue-deep);
+  /* ↑ 用变量，深色模式自动变浅 */
+}
+
 .progress>div {
   /* ↑ > 表示"直接子元素"，也就是里面的 #todoBar */
   width: 0;
@@ -335,6 +409,7 @@ input {
 
 /* 第 17 关 · 手机（屏幕宽度 ≤ 480px）时，套用这套专属样式 */
 @media (max-width: 480px) {
+
   /* ↑ 媒体查询：只有屏幕宽度 ≤ 480px（手机）时才生效 */
   body {
     padding: 16px 10px;
@@ -375,6 +450,7 @@ input {
 }
 
 @media (max-width: 700px) {
+
   /* ↑ 屏幕 ≤ 700px 时（平板竖屏、手机），改为单列 */
   .grid {
     grid-template-columns: 1fr;
@@ -383,6 +459,7 @@ input {
 
 /* ---------- 第 19 关 · CSS 动画 ---------- */
 @keyframes fadeInUp {
+
   /* ↑ 定义一个叫 fadeInUp 的动画：从下面淡入 */
   from {
     opacity: 0;
@@ -400,6 +477,7 @@ input {
 }
 
 @keyframes breathe {
+
   /* ↑ 定义"呼吸变色"动画：蓝→粉→蓝循环 */
   0%,
   100% {

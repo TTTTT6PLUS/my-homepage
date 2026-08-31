@@ -217,15 +217,30 @@ function updateCount() {
   // ↑ 顺便更新进度条
 }
 
+const RING_C = 2 * Math.PI * 52;
+// ↑ （新增）环形图圆周长 = 2π×半径；这里的 52 要和 SVG 里 r="52" 严格一致！
+
+function updateRing(percent) {
+  // ↑ （新增）根据完成率刷新环形图
+  const offset = RING_C * (1 - percent / 100);
+  // ↑ 算要"藏掉"多少弧长：完成率 0% → 藏掉整个周长（全空）；
+  //   100% → 藏 0（满圈）；中间值按比例。percent/100 是把它变成 0~1 的小数
+  $("ringFg").style.strokeDashoffset = offset;
+  // ↑ 把算好的值写进前景圆的 stroke-dashoffset 属性
+  $("ringLabel").innerText = percent + "%";
+  // ↑ （新增）把环中心的大数字也更新成当前百分比
+}
+
 function updateProgress() {
   // ↑ 更新完成率和进度条
   const done = tasks.reduce((acc, t) => acc + (t.done ? 1 : 0), 0);
   // ↑ reduce 累加"已完成"的数量
   const percent = tasks.length === 0 ? 0 : Math.round((done / tasks.length) * 100);
-  // ↑ 完成率 = 已完成 / 总数 * 100；任务为空时直接 0（避免除以 0）
-  $("todoPercent").innerText = `完成率：${percent}%`;
+  // ↑ 完成率 = 已完成 / 总数 * 100；任务为空时直接 0
   $("todoBar").style.width = percent + "%";
-  // ↑ 把进度条内层的宽度设成对应百分比
+  // ↑ 把进度条内层宽度设成对应百分比
+  updateRing(percent);
+  // ↑ （新增）把环形图也刷成同样的完成率
 }
 
 function clearDone() {
