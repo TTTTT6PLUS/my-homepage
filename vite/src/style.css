@@ -1,73 +1,111 @@
+/* ===== 本文件是全局样式：定义颜色变量、布局、按钮、动画等 ===== */
+
 :root {
+  /* ↑ :root 选择器代表"根"，这里集中存放 CSS 变量（--xx），供全站复用 */
   --blue: #2563eb;
+  /* ↑ 主蓝色：按钮、链接等都会用到 */
   --blue-deep: #1e3a8a;
+  /* ↑ 深蓝：标题文字颜色 */
   --blue-dark: #1e40af;
+  /* ↑ 另一种蓝：标签文字用 */
   --blue-lite: #dbeafe;
+  /* ↑ 浅蓝：标签底色 */
   --blue-line: #bfdbfe;
+  /* ↑ 更浅的蓝：边框线色 */
   --text: #475569;
+  /* ↑ 正文灰色文字 */
   --amber: #f59e0b;
+  /* ↑ 琥珀色：语录、编辑按钮用 */
   --green: #10b981;
+  /* ↑ 绿色：完成按钮、进度条用 */
   --red: #ef4444;
+  /* ↑ 红色：删除按钮、校验报错用 */
   --pink: #ec4899;
+  /* ↑ 粉色：头像悬停、呼吸动画用 */
   --track: #e2e8f0;
+  /* ↑ 浅灰：进度条底槽、分割线用 */
   --bg: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  /* ↑ 页面背景：一个 135 度的蓝白渐变 */
   --card-bg: #ffffff;
+  /* ↑ 卡片背景：白色 */
   --block-bg: #f8fafc;
+  /* ↑ 功能块背景：近白色 */
   --todo-bg: #e0f2fe;
+  /* ↑ 待办条目背景：浅蓝 */
 }
 
 * {
   box-sizing: border-box;
 }
+/* ↑ 通配符 *：所有元素都算上内边距和边框的宽度，布局更好算 */
 
 body {
   margin: 0;
+  /* ↑ 去掉浏览器默认的外边距 */
   padding: 40px 20px;
+  /* ↑ 上下留 40px、左右留 20px 的内边距 */
   text-align: center;
+  /* ↑ 内容整体居中 */
   font-family: "微软雅黑", "PingFang SC", sans-serif;
+  /* ↑ 字体：优先微软雅黑，其次苹方，最后系统无衬线字体兜底 */
   background: var(--bg);
+  /* ↑ 用前面定义的渐变背景变量 */
 }
 
 body.green {
   background: linear-gradient(135deg, #dcfce7, #bbf7d0);
 }
+/* ↑ 当 body 带 .green 类时，背景换成绿色渐变（换个肤色的效果） */
 
 /* ---------- 第 18 关 · 深色模式：覆盖白天变量为深色值 ---------- */
 body.dark {
+  /* ↑ 当 body 带 .dark 类时，把下面这些变量全部改成深色调 */
   --bg: linear-gradient(135deg, #0f172a, #1e293b);
+  /* ↑ 深色背景渐变 */
   --card-bg: #1e293b;
   --block-bg: #0f172a;
   --todo-bg: #334155;
   --blue-deep: #93c5fd;
+  /* ↑ 深色下标题改用浅蓝，否则深蓝看不清 */
   --text: #cbd5e1;
   --track: #334155;
 }
 
 body.dark input {
+  /* ↑ 深色模式下，输入框单独配色 */
   color: #e2e8f0;
+  /* ↑ 输入文字变浅色 */
   background: #0f172a;
   border-color: #334155;
 }
 
 .card {
   width: 100%;
+  /* ↑ 先占满父容器宽度 */
   max-width: 900px;
+  /* ↑ 但最多不超过 900px，避免大屏太宽 */
   margin: 0 auto;
+  /* ↑ 上下 0、左右 auto，实现水平居中 */
   padding: 40px 30px;
   background: var(--card-bg);
   border-radius: 20px;
+  /* ↑ 圆角 20px */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  /* ↑ 卡片投影：向下 10px、模糊 30px、半透明黑 */
   animation: fadeInUp 0.8s ease;
+  /* ↑ 加载时播放一次"淡入上移"动画，0.8 秒 */
 }
 
 h1,
 h2 {
   color: var(--blue-deep);
 }
+/* ↑ 一级和二级标题都用深蓝色 */
 
 h1 {
   margin: 10px 0;
   animation: breathe 4s ease-in-out infinite;
+  /* ↑ 名字标题永远循环"呼吸变色"动画，4 秒一轮 */
 }
 
 h2 {
@@ -78,6 +116,7 @@ h2 {
 .intro {
   color: var(--text);
   line-height: 1.8;
+  /* ↑ 行高 1.8 倍，文字间隔更透气 */
 }
 
 .about-list {
@@ -85,18 +124,22 @@ h2 {
   margin: 12px auto;
   padding: 0;
   text-align: left;
+  /* ↑ 列表文字左对齐 */
   list-style: none;
+  /* ↑ 去掉列表默认的圆点 */
 }
 
 .about-list li {
   padding: 10px 0;
   border-bottom: 1px dashed var(--track);
+  /* ↑ 每条下面画一条虚线分隔 */
   color: var(--text);
 }
 
 .block {
   margin-top: 24px;
 }
+/* ↑ 功能块之间的上间距 */
 
 .avatar {
   width: 120px;
@@ -104,24 +147,32 @@ h2 {
   margin-bottom: 16px;
   border: 4px solid var(--blue-line);
   border-radius: 50%;
+  /* ↑ 圆角 50%，正方形就变圆形头像 */
   transition: all 0.3s ease;
+  /* ↑ 所有属性变化都加 0.3 秒过渡，让悬停更平滑 */
 }
 
 .avatar:hover {
+  /* ↑ :hover 表示鼠标悬停时的状态 */
   border-color: var(--pink);
   box-shadow: 0 0 24px rgba(236, 72, 153, 0.6);
+  /* ↑ 悬停时发粉色光晕 */
   transform: scale(1.5);
+  /* ↑ 悬停时放大到 1.5 倍 */
 }
 
 .tag {
   display: inline-block;
+  /* ↑ 变成行内块，才能设置宽高和上下外边距 */
   margin: 4px;
   padding: 6px 14px;
   font-size: 14px;
   color: var(--blue-dark);
   background: var(--blue-lite);
   border-radius: 999px;
+  /* ↑ 超大圆角，做出"胶囊"形状 */
   cursor: pointer;
+  /* ↑ 鼠标移上变小手 */
   transition: all 0.2s ease;
 }
 
@@ -129,12 +180,14 @@ h2 {
   color: #fff;
   background: #3b82f6;
   transform: translateY(-6px);
+  /* ↑ 悬停时向上浮起 6px */
 }
 
 a {
   margin: 0 10px;
   color: var(--blue);
   text-decoration: none;
+  /* ↑ 去掉链接默认的下划线 */
 }
 
 button {
@@ -144,6 +197,7 @@ button {
   color: #fff;
   background: var(--blue);
   border: none;
+  /* ↑ 去掉按钮默认边框 */
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -151,14 +205,17 @@ button {
 
 button:hover {
   background: #1d4ed8;
+  /* ↑ 悬停稍微加深蓝色 */
   transform: translateY(-2px);
 }
 
 button:active {
   transform: scale(0.96);
+  /* ↑ 按下去的瞬间缩小一点，有"按下"的手感 */
 }
 
 button.btn-sm {
+  /* ↑ 小号按钮（列表里的完成/删除/编辑用） */
   margin: 0 0 0 12px;
   padding: 3px 10px;
   font-size: 12px;
@@ -195,6 +252,7 @@ input {
   border: 2px solid var(--blue-line);
   border-radius: 10px;
   outline: none;
+  /* ↑ 去掉点击输入框时的默认蓝色外框 */
 }
 
 #quoteText {
@@ -205,6 +263,7 @@ input {
 
 #todoList,
 #poolList {
+  /* ↑ 待办列表和抽签名单共用同一套列表样式 */
   max-width: 320px;
   margin: 12px auto;
   padding: 0;
@@ -222,6 +281,7 @@ input {
 
 .todo-done {
   text-decoration: line-through;
+  /* ↑ 完成的待办加"删除线" */
 }
 
 .progress {
@@ -229,15 +289,19 @@ input {
   height: 12px;
   margin: 8px auto;
   overflow: hidden;
+  /* ↑ 超出部分裁掉，保证进度条圆角不被破坏 */
   background: var(--track);
   border-radius: 999px;
 }
 
 .progress>div {
+  /* ↑ > 表示"直接子元素"，也就是里面的 #todoBar */
   width: 0;
+  /* ↑ 初始宽度 0，JS 会改成对应百分比 */
   height: 100%;
   background: var(--green);
   transition: width 0.3s;
+  /* ↑ 宽度变化加动画，进度条平滑增长 */
 }
 
 .dog-img {
@@ -254,12 +318,15 @@ input {
 
 .hidden {
   display: none;
+  /* ↑ 万能"隐藏"类：加上的元素彻底不显示、不占位 */
 }
 
-/* 手机（屏幕宽度 ≤ 480px）时，套用这套专属样式 */
+/* 第 17 关 · 手机（屏幕宽度 ≤ 480px）时，套用这套专属样式 */
 @media (max-width: 480px) {
+  /* ↑ 媒体查询：只有屏幕宽度 ≤ 480px（手机）时才生效 */
   body {
     padding: 16px 10px;
+    /* ↑ 手机屏幕小，缩小外边距 */
   }
 
   .card {
@@ -268,14 +335,18 @@ input {
 
   h1 {
     font-size: 22px;
+    /* ↑ 标题字号调小，避免手机上太长 */
   }
 }
 
 /* ---------- 第 17 关 · 响应式网格：宽屏两列，窄屏一列 ---------- */
 .grid {
   display: grid;
+  /* ↑ 启动 Grid 网格布局 */
   grid-template-columns: 1fr 1fr;
+  /* ↑ 两列，等宽（1fr = 各占一份） */
   gap: 20px;
+  /* ↑ 格子之间的间距 */
   text-align: left;
 }
 
@@ -292,6 +363,7 @@ input {
 }
 
 @media (max-width: 700px) {
+  /* ↑ 屏幕 ≤ 700px 时（平板竖屏、手机），改为单列 */
   .grid {
     grid-template-columns: 1fr;
   }
@@ -299,42 +371,57 @@ input {
 
 /* ---------- 第 19 关 · CSS 动画 ---------- */
 @keyframes fadeInUp {
+  /* ↑ 定义一个叫 fadeInUp 的动画：从下面淡入 */
   from {
     opacity: 0;
+    /* ↑ 起始：完全透明 */
     transform: translateY(30px);
+    /* ↑ 起始：往下偏移 30px */
   }
 
   to {
     opacity: 1;
+    /* ↑ 结束：完全显示 */
     transform: translateY(0);
+    /* ↑ 结束：回到原位 */
   }
 }
 
 @keyframes breathe {
-
+  /* ↑ 定义"呼吸变色"动画：蓝→粉→蓝循环 */
   0%,
   100% {
     color: var(--blue-deep);
+    /* ↑ 0% 和 100%（开头和结尾）都是深蓝 */
   }
 
   50% {
     color: var(--pink);
+    /* ↑ 播放到一半时变成粉色 */
   }
 }
 
 /* ---------- 第 23 关 · 表单校验状态 ---------- */
 input.invalid {
+  /* ↑ 输入非法时 JS 会给它加 .invalid 类 */
   border-color: var(--red);
+  /* ↑ 红框提示 */
   background: #fee2e2;
+  /* ↑ 淡红底 */
 }
 
 body.dark input.invalid {
+  /* ↑ 深色模式下的非法输入框，底色要更深 */
   border-color: var(--red);
   background: #3f1d1d;
 }
 
 button:disabled {
+  /* ↑ 按钮被禁用（disabled）时的样子 */
   background: #cbd5e1;
+  /* ↑ 灰色 */
   cursor: not-allowed;
+  /* ↑ 鼠标变成"禁止"符号 */
   opacity: 0.6;
+  /* ↑ 半透明，看起来"点不了" */
 }

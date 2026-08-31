@@ -1,152 +1,221 @@
+// 待办清单（To-Do List）：增删改查 + 筛选排序 + 进度条 + localStorage 持久化
+
 import { $, on, makeButton } from "./utils.js";
+// ↑ 引入 $、on、makeButton 三个工具
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-// 新增两个状态变量，记住"现在筛什么、要不要排序"
-let filterMode = "all";        // "all"全部 | "active"未完成 | "done"已完成
-let showActiveFirst = false;   // true = 未完成的排前面
+// ↑ 从 localStorage 读回已存的任务数组；若是第一次（null），则用空数组 [] 兜底。
+//   JSON.parse 是把存进去的字符串还原成数组
+let filterMode = "all";
+// ↑ 记录"当前筛选模式"：all 全部 / active 未完成 / done 已完成
+let showActiveFirst = false;
+// ↑ 记录"是否开启未完成优先排序"
 
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+  // ↑ 把 tasks 数组转成字符串，存进 localStorage（因为 storage 只能存字符串）
 }
 
 function getVisibleTasks() {
-  // 1. 先按筛选模式过滤
+  // ↑ 计算出"当前应该显示的"任务列表（筛选 + 排序后）
   let list = tasks.filter((t) => {
+    // ↑ filter 会遍历每个任务 t，返回一个新的数组
     if (filterMode === "active") return !t.done;  // 只看未完成
     if (filterMode === "done") return t.done;     // 只看已完成
     return true;                                  // 其余情况：全部保留
   });
 
-  // 2. 如果需要，再把未完成的排到前面
   if (showActiveFirst) {
+    // ↑ 如果开启了"未完成优先"
     list.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0));
+    // ↑ sort 排序：未完成的(0)排在已完成(1)前面
   }
   return list;
+  // ↑ 返回处理好的列表
 }
 
 function addTodo() {
+  // ↑ 添加一条待办
   const task = $("todoInput").value.trim();
+  // ↑ 拿到输入框内容并去首尾空格
   if (!task) return;
+  // ↑ 空内容直接忽略
   tasks.push({ text: task, done: false });
+  // ↑ 往数组尾部加一个任务对象 { 文字, 是否完成 }
   $("todoInput").value = "";
+  // ↑ 清空输入框
   saveTasks();
+  // ↑ 存盘
   renderTodo();
+  // ↑ 重新渲染列表
 }
 
 function deleteTodo(i) {
+  // ↑ 删除下标为 i 的任务
   tasks.splice(i, 1);
+  // ↑ splice(i, 1) 表示从位置 i 删除 1 个元素
   saveTasks();
   renderTodo();
 }
 
 function toggleDone(i) {
+  // ↑ 切换第 i 条任务的完成状态
   tasks[i].done = !tasks[i].done;
+  // ↑ 取反：完成↔未完成
   saveTasks();
   renderTodo();
 }
 
 function editTodo(i) {
+  // ↑ 编辑第 i 条任务
   const newText = prompt("修改这条待办：", tasks[i].text);
+  // ↑ prompt 弹出一个带输入框的对话框，返回用户输入的文字（取消则返回 null）
   if (newText !== null && newText.trim() !== "") {
+    // ↑ 用户没取消、且新文字非空，才更新
     tasks[i].text = newText;
+    // ↑ 替换文字（注意：这里直接存原值，不去空格，简单起见）
     saveTasks();
     renderTodo();
   }
 }
 
 function renderTodo() {
+  // ↑ 把 tasks 画到页面上（核心渲染函数）
   const list = $("todoList");
   list.innerHTML = "";
+  // ↑ 先清空列表，避免重复添加
+
   getVisibleTasks().forEach((item) => {
+    // ↑ 遍历"当前要显示"的每个任务
     const i = tasks.indexOf(item);
+    // ↑ 找到这条任务在原数组里的真实下标（因为显示顺序可能被排序改变）
     const li = document.createElement("li");
-    li.dataset.index = i;              // ① 把"真实下标"刻在 li 身上
+    // ↑ 为每条任务新建一个 <li>
+    li.dataset.index = i;
+    // ↑ 把"真实下标"记录在 li 的自定义属性 data-index 上，供点击时取回
     li.textContent = item.text;
+    // ↑ 显示任务文字
     li.classList.toggle("todo-done", item.done);
+    // ↑ 如果已完成，就给 li 加 .todo-done 类（加删除线）
     li.append(
-      makeButton("完成", "btn-sm btn-done"),   // ② 不再传第三个参数 → 不绑事件
+      makeButton("完成", "btn-sm btn-done"),
       makeButton("删除", "btn-sm btn-del"),
       makeButton("编辑", "btn-sm btn-edit")
     );
+    // ↑ 用 makeButton 造三个小按钮，append 一次性塞进 li；
+    //   注意这里不传第三个参数，所以不单独绑事件（交给事件委托统一处理）
     list.appendChild(li);
+    // ↑ 把这条 li 放进列表
   });
   updateCount();
+  // ↑ 刷新计数和进度条
 }
 
 function handleTodoClick(e) {
-  const btn = e.target.closest("button");   // 被点的到底是不是按钮？
-  if (!btn) return;                          // 点的是 li 文字 → 不是按钮，忽略
+  // ↑ 事件委托：整个列表只绑一个点击监听，命中哪个小按钮就做对应操作
+  const btn = e.target.closest("button");
+  // ↑ e.target 是真正被点的元素；closest 向上找最近的 button
+  if (!btn) return;
+  // ↑ 点的不是按钮（是 li 文字），直接忽略
 
-  const li = btn.closest("li");              // 这个按钮属于哪一条任务
-  const i = Number(li.dataset.index);        // 取回这条任务在 tasks 里的真实下标
+  const li = btn.closest("li");
+  // ↑ 找到这个按钮所属的 li
+  const i = Number(li.dataset.index);
+  // ↑ 取回之前记录的真实下标（记得转成数字）
 
   if (btn.classList.contains("btn-done")) toggleDone(i);
+  // ↑ 如果按钮带 btn-done 类 → 切换完成状态
   else if (btn.classList.contains("btn-del")) deleteTodo(i);
+  // ↑ 如果带 btn-del 类 → 删除
   else if (btn.classList.contains("btn-edit")) editTodo(i);
+  // ↑ 如果带 btn-edit 类 → 编辑
 }
 
 function handleTodoDblclick(e) {
-  const li = e.target.closest("li");         // 双击的是哪一条
+  // ↑ 双击一条待办，也切换完成状态
+  const li = e.target.closest("li");
   if (!li) return;
-  toggleDone(Number(li.dataset.index));      // 双击 = 切换完成状态
+  toggleDone(Number(li.dataset.index));
 }
 
 function updateCount() {
+  // ↑ 更新"未完成几件"
   const active = tasks.filter((t) => !t.done).length;
+  // ↑ 数一下还有多少未完成
   $("todoCount").innerText = `未完成：${active} 件`;
   updateProgress();
+  // ↑ 顺便更新进度条
 }
 
 function updateProgress() {
+  // ↑ 更新完成率和进度条
   const done = tasks.reduce((acc, t) => acc + (t.done ? 1 : 0), 0);
+  // ↑ reduce 累加"已完成"的数量
   const percent = tasks.length === 0 ? 0 : Math.round((done / tasks.length) * 100);
+  // ↑ 完成率 = 已完成 / 总数 * 100；任务为空时直接 0（避免除以 0）
   $("todoPercent").innerText = `完成率：${percent}%`;
   $("todoBar").style.width = percent + "%";
+  // ↑ 把进度条内层的宽度设成对应百分比
 }
 
 function clearDone() {
+  // ↑ 清除所有已完成的任务
   tasks = tasks.filter((t) => !t.done);
+  // ↑ 只保留"未完成"的
   saveTasks();
   renderTodo();
 }
 
 function completeAll() {
+  // ↑ 全部标记为完成
   tasks.forEach((t) => (t.done = true));
+  // ↑ 每个任务的 done 都设为 true
   saveTasks();
   renderTodo();
 }
 
 function exportTasks() {
+  // ↑ 把任务导出成一行文字
   if (tasks.length === 0) {
     $("exportResult").innerText = "还没有待办哦";
     return;
   }
   $("exportResult").innerText = tasks
     .map((t) => (t.done ? "[✓] " : "[ ] ") + t.text)
+    // ↑ map 把每条任务变成 "[✓] 文字" 或 "[ ] 文字"
     .join(" · ");
+  // ↑ join 用一个分隔符把数组连成一个字符串
 }
 
 function setFilter(mode) {
-  filterMode = mode;      // 更新"筛选状态"
-  renderTodo();           // 重新画一遍列表
+  // ↑ 切换筛选模式
+  filterMode = mode;
+  renderTodo();
 }
 
 function toggleSort() {
-  showActiveFirst = !showActiveFirst;  // 翻转"排序"开关
+  // ↑ 切换"未完成优先"排序
+  showActiveFirst = !showActiveFirst;
   renderTodo();
 }
 
 export function initTodo() {
+  // ↑ 启动函数：main.js 会调用它
+
   on("btnAddTodo", "click", addTodo);
   on("btnCompleteAll", "click", completeAll);
   on("btnClearDone", "click", clearDone);
   on("btnExport", "click", exportTasks);
   on("todoInput", "keydown", (e) => { if (e.key === "Enter") addTodo(); });
+  // ↑ 在待办输入框按回车，等价于点"添加"
   on("btnFilterAll", "click", () => setFilter("all"));
   on("btnFilterActive", "click", () => setFilter("active"));
   on("btnFilterDone", "click", () => setFilter("done"));
   on("btnSortActive", "click", toggleSort);
   on("todoList", "click", handleTodoClick);
+  // ↑ 事件委托：列表上点任何按钮都由 handleTodoClick 统一分发
   on("todoList", "dblclick", handleTodoDblclick);
+  // ↑ 双击列表项也切换完成状态
   renderTodo();
+  // ↑ 首次渲染：把 localStorage 里读到的任务画出来
 }

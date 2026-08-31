@@ -1,57 +1,87 @@
 <!DOCTYPE html>
+<!-- ↑ 声明：这是一份 HTML5 文档，告诉浏览器用新标准来解析 -->
 <html lang="zh-CN">
+<!-- ↑ <html> 是整个网页的根；lang="zh-CN" 表示网页用简体中文，方便屏幕阅读器等识别 -->
 
 <head>
+  <!-- ↑ <head> 里放的是"给浏览器看的配置信息"，不会直接显示在页面上 -->
   <meta charset="UTF-8">
+  <!-- ↑ 指定字符编码为 UTF-8，这样中文才不会乱码 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ↑ 让手机按设备宽度显示、初始不缩放，是响应式布局的基础 -->
   <title>我的个人主页</title>
+  <!-- ↑ 浏览器标签页标题栏显示的文字 -->
 </head>
 
 <body>
+  <!-- ↑ <body> 里的内容才是用户真正能在屏幕上看到的 -->
   <div class="card">
+    <!-- ↑ 用一个大容器 .card 把整页内容包起来，方便整体居中、加白底圆角 -->
+
     <img class="avatar" src="avatar.svg" alt="我的头像">
+    <!-- ↑ 头像图片：src 是图片地址，alt 是图片加载失败时显示的文字 -->
+
     <button id="btnTheme">🌙 切换主题</button>
+    <!-- ↑ 主题切换按钮；id 是 JS 找它的"唯一身份证" -->
+
     <h1 id="myName">你好，我是 TTTTT6</h1>
+    <!-- ↑ 一级标题，显示名字；id="myName" 让 JS 能改这段文字（改名功能） -->
+
     <p class="intro">我是一名正在学习前端开发的新手，喜欢把想法变成好看的网页。这里是我的个人主页，未来会越来越棒的！请多多指教。</p>
+    <!-- ↑ 一段自我介绍文字，<p> 是段落 -->
 
     <h2>关于我</h2>
+    <!-- ↑ 二级标题 -->
+
     <ul class="about-list">
+      <!-- ↑ 无序列表 <ul>，里面是一条条 <li> 列表项 -->
       <li>🎓 正在学：HTML / CSS / JavaScript</li>
       <li>🌟 目标：成为一名前端工程师</li>
       <li>🏠 坐标：中国</li>
       <li>💬 一句话：热爱学习，乐于分享</li>
     </ul>
 
-    <p id="winWidth">窗口宽度：--px</p> <!-- 新增这一行 -->
+    <p id="winWidth">窗口宽度：--px</p>
+    <!-- ↑ 显示窗口宽度，初始是占位文字，之后由 win.js 动态更新成真实像素值 -->
 
     <div>
+      <!-- ↑ 普通容器，装下面几个兴趣"标签" -->
       <span class="tag">睡觉</span>
       <span class="tag">游戏</span>
       <span class="tag">音乐</span>
       <span class="tag">编程</span>
+      <!-- ↑ <span> 是行内小元素，配合 CSS 做成圆角"胶囊"小标签 -->
     </div>
 
     <div class="block">
+      <!-- ↑ 联系方式区块 -->
       <a href="mailto:xxx@example.com">📧 邮箱</a>
+      <!-- ↑ mailto: 表示点击后打开系统邮件客户端写邮件 -->
       <a href="https://github.com/" target="_blank">🐙 GitHub</a>
+      <!-- ↑ target="_blank" 表示点开后在"新标签页"打开链接 -->
     </div>
 
     <div class="grid">
+      <!-- ↑ .grid 是网格式布局容器，下面的每个 .block 就是"一格" -->
 
       <div class="block">
+        <!-- ↑ 第一个功能块：打招呼/改名/换肤色 -->
         <button id="btnHello">点我打招呼</button>
         <button id="btnRename">改个名字</button>
         <button id="btnSkin">换个肤色</button>
       </div>
 
       <div class="block">
+        <!-- ↑ 第二个功能块：改名输入框 + 摸鱼语录 -->
         <input id="nameInput" type="text" placeholder="输入你的新名字">
+        <!-- ↑ 输入框：placeholder 是"提示文字"，未输入时灰色显示 -->
         <button id="btnConfirmName">确认改名</button>
         <p id="quoteText">点下面的按钮，抽一句摸鱼语录~</p>
         <button id="btnQuote">随机摸鱼语录</button>
       </div>
 
       <div class="block">
+        <!-- ↑ 第三个功能块：待办清单 -->
         <h2>待办清单</h2>
         <input id="todoInput" type="text" placeholder="输入要做的事">
         <button id="btnAddTodo">添加</button>
@@ -59,21 +89,26 @@
         <button id="btnClearDone">清除已完成</button>
         <button id="btnExport">导出为文字</button>
         <div>
+          <!-- ↑ 筛选/排序按钮组 -->
           <button id="btnFilterAll">全部</button>
           <button id="btnFilterActive">未完成</button>
           <button id="btnFilterDone">已完成</button>
           <button id="btnSortActive">未完成优先</button>
         </div>
         <p id="exportResult"></p>
+        <!-- ↑ 导出结果会写进这个空段落 -->
         <p id="todoCount">未完成：0 件</p>
         <div class="progress">
           <div id="todoBar"></div>
+          <!-- ↑ 进度条：里面这个 div 的宽度会随完成率变化 -->
         </div>
         <p id="todoPercent">完成率：0%</p>
         <ul id="todoList"></ul>
+        <!-- ↑ 空的待办列表，JS 会往里动态塞 <li> -->
       </div>
 
       <div class="block">
+        <!-- ↑ 第四块：倒计时器 -->
         <h2>倒计时器</h2>
         <input id="timerInput" type="text" placeholder="输入秒数">
         <button id="btnStartTimer">开始</button>
@@ -82,22 +117,27 @@
       </div>
 
       <div class="block">
+        <!-- ↑ 第五块：幸运抽签 -->
         <h2>幸运抽签</h2>
         <input id="namePool" type="text" placeholder="输入一个名字">
         <button id="btnAddName">加入名单</button>
         <button id="btnDraw">开始抽签</button>
         <p id="drawResult">点「开始抽签」试试手气~</p>
         <ul id="poolList"></ul>
+        <!-- ↑ 空的名单列表，JS 会往里动态塞名字 -->
       </div>
 
       <div class="block">
+        <!-- ↑ 第六块：随机狗狗 -->
         <h2>随机狗狗</h2>
         <button id="btnDog">来一只狗狗</button>
         <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
         <img id="dogImg" class="dog-img hidden" alt="随机狗狗">
+        <!-- ↑ 狗图：class 里有 hidden，默认隐藏，抓到后再显示 -->
       </div>
 
       <div class="block">
+        <!-- ↑ 第七块：GitHub 用户查询 -->
         <h2>GitHub 用户查询</h2>
         <input id="ghName" type="text" placeholder="输入 GitHub 用户名">
         <button id="btnSearchUser">查询</button>
@@ -106,6 +146,7 @@
       </div>
 
       <div class="block">
+        <!-- ↑ 第八块：猜数字游戏 -->
         <h2>猜数字游戏</h2>
         <p id="guessHint">我想了一个 1~100 之间的数字，来猜猜看！</p>
         <input id="guessInput" type="text" placeholder="输入你的猜测">
@@ -118,6 +159,7 @@
   </div>
 
   <script type="module" src="/src/main.js"></script>
+  <!-- ↑ 引入 JS 入口文件；type="module" 才能用 import 导入其它模块 -->
 </body>
 
 </html>
