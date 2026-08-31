@@ -1,7 +1,7 @@
-// 随机摸鱼语录：点按钮，从数组里随便抽一句话显示
+// 随机摸鱼语录：点按钮抽一句话显示，还能一键复制到剪贴板
 
-import { $, on } from "./utils.js";
-// ↑ 引入二个工具函数
+import { $, on, notify } from "./utils.js";
+// ↑ 现在也从公共工具里"借"一个 notify 进来
 
 const quotes = [
   // ↑ 定义语录数组，里面是 5 条字符串
@@ -15,13 +15,25 @@ const quotes = [
 function randomQuote() {
   // ↑ 抽语录的核心函数
   const i = Math.floor(Math.random() * quotes.length);
-  // ↑ Math.random() 返回 0~1 的随机小数；乘以数组长度再向下取整，
-  //   就得到一个合法的随机下标（0 到 4 之间）
+  // ↑ 得到 0~4 的随机下标
   $("quoteText").innerText = quotes[i];
-  // ↑ 把抽中的那句写进页面上的 quoteText 元素
+  // ↑ 把抽中的文字写进页面
+}
+
+function copyQuote() {
+  // ↑ 把当前显示的语录复制进剪贴板
+  const text = $("quoteText").innerText;
+  // ↑ 先读出 quoteText 里现在显示的文字
+  navigator.clipboard.writeText(text).then(() => {
+    // ↑ 写进剪贴板；成功后执行 then 里的回调
+    notify("复制成功", "语录已复制到剪贴板~");
+    // ↑ （改动）这里不再是 alert 了，改成调用咱们自己写的 notify
+  });
 }
 
 export function initQuote() {
   on("btnQuote", "click", randomQuote);
-  // ↑ 绑定：点"随机摸鱼语录"按钮 → 执行抽语录
+  // ↑ 点"随机摸鱼语录"→ 抽一句
+  on("btnCopyQuote", "click", copyQuote);
+  // ↑ 点"复制语录"→ 复制 + 弹通知
 }

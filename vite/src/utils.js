@@ -51,3 +51,28 @@ export function throttle(fn, delay) {
     }
   };
 }
+
+// 弹系统通知：title 是标题，body 是正文
+export function notify(title, body) {
+  // ↑ 判断：如果浏览器不支持通知，就退回 alert
+  if (!("Notification" in window)) {
+    alert(title + "：" + body);
+    return;
+    // ↑ 没这功能就走人，不往下执行
+  }
+  // ↑ 权限已经是"允许"，直接弹
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+    // ↑ 真正发出系统通知
+  } else if (Notification.permission !== "denied") {
+    // ↑ 还没问过（default），去申请权限
+    Notification.requestPermission().then((perm) => {
+      // ↑ 弹出"允许/阻止"确认框，拿到用户选择 perm
+      if (perm === "granted") {
+        // ↑ 用户点"允许"才发
+        new Notification(title, { body });
+      }
+    });
+  }
+  // ↑ 被拒过（denied）就安静跳过
+}

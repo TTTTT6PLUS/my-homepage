@@ -1,7 +1,7 @@
 // 待办清单（To-Do List）：增删改查 + 筛选排序 + 进度条 + localStorage 持久化
 
-import { $, on, makeButton } from "./utils.js";
-// ↑ 引入 $、on、makeButton 三个工具
+import { $, on, makeButton, notify } from "./utils.js";
+// ↑ 在原有基础上，多借一个 notify 进来
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 // ↑ 从 localStorage 读回已存的任务数组；若是第一次（null），则用空数组 [] 兜底。
@@ -95,7 +95,7 @@ function renderTodo() {
     // ↑ 找到这条任务在原数组里的真实下标（因为显示顺序可能被排序改变）
     const li = document.createElement("li");
     // ↑ 为每条任务新建一个 <li>
-    li.draggable = true;   
+    li.draggable = true;
     // ↑ 设置这一项可以被拖起来（HTML5 拖拽开关）
     li.dataset.index = i;
     // ↑ 把"真实下标"记录在 li 的自定义属性 data-index 上，供点击时取回
@@ -245,16 +245,27 @@ function completeAll() {
 }
 
 function exportTasks() {
-  // ↑ 把任务导出成一行文字
+  // ↑ 把任务导出成一行文字，并一键复制 + 弹通知
   if (tasks.length === 0) {
+    // ↑ 没有任务时，只提示一句就结束
     $("exportResult").innerText = "还没有待办哦";
     return;
+    // ↑ 后面都不执行
   }
-  $("exportResult").innerText = tasks
+
+  const text = tasks
     .map((t) => (t.done ? "[✓] " : "[ ] ") + t.text)
     // ↑ map 把每条任务变成 "[✓] 文字" 或 "[ ] 文字"
     .join(" · ");
   // ↑ join 用一个分隔符把数组连成一个字符串
+  $("exportResult").innerText = text;
+  // ↑ （改动）先把结果存进 text 变量，再显示到页面
+
+  navigator.clipboard.writeText(text).then(() => {
+    // ↑ （新增）复用剪贴板 API：把这段文字也写进剪贴板
+    notify("导出成功", "待办已复制到剪贴板~");
+    // ↑ （新增）复用公共的 notify，弹个系统通知
+  });
 }
 
 function setFilter(mode) {
