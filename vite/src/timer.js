@@ -2,74 +2,69 @@
 
 import { $, on } from "./utils.js";
 
-let timerId = null;
-// ↑ 保存定时器的编号；null 表示"当前没有定时器在跑"
-let leftTime = 0;
-// ↑ 记录剩余秒数
-
-function validateTimer() {
-  // ↑ 校验函数：检查输入是不是合法的正整数，并实时反馈
-  const val = $("timerInput").value.trim();
-  // ↑ 拿到输入值并去首尾空格
-  const ok = /^\d+$/.test(val) && Number(val) > 0;
-  // ↑ /^\d+$/ 是正则：从头到尾全是数字；再要求转成数字后大于 0
-  $("timerInput").classList.toggle("invalid", !ok);
-  // ↑ 不合法就给输入框加 .invalid 类（红框）
-  $("btnStartTimer").disabled = !ok;
-  // ↑ 不合法就禁用"开始"按钮
-  return ok;
-  // ↑ 返回"合不合法"
-}
-
-function startTimer() {
-  // ↑ 点"开始"时执行
-  if (!validateTimer()) {
-    // ↑ 先校验，不合法就提示并退出
-    $("timerDisplay").innerText = "请输入一个正整数（秒）";
-    return;
+class Timer {
+  // ↑ 用 class 声明一个"类"，就好比一张"倒计时器图纸"（模具）
+  constructor() {
+    // ↑ 构造器：每次 new Timer() 时自动执行一次，负责给这个实例初始化
+    this.timerId = null;
+    // ↑ this 指向"当前造出来的那个实例"，this.timerId 是它自己的定时器编号
+    this.leftTime = 0;
+    // ↑ this.leftTime 是它自己的剩余秒数
   }
-  if (timerId !== null) clearInterval(timerId);
-  // ↑ 如果之前已经有定时器在跑，先清掉，避免多个定时器叠加
 
-  const seconds = Number($("timerInput").value);
-  // ↑ 把输入的字符串转成数字
 
-  leftTime = seconds;
-  $("timerDisplay").innerText = leftTime + " 秒";
-  // ↑ 先显示初始剩余秒数
+  validateTimer() {
+    // ↑ 方法：没有 function 关键字，直接"名字 + 括号"
+    const val = $("timerInput").value.trim();
+    const ok = /^\d+$/.test(val) && Number(val) > 0;
+    $("timerInput").classList.toggle("invalid", !ok);
+    $("btnStartTimer").disabled = !ok;
+    return ok;
+  }
 
-  timerId = setInterval(() => {
-    // ↑ 每隔 1000 毫秒（1 秒）执行一次这个函数
-    leftTime--;
-    // ↑ 剩余秒数减 1
-    $("timerDisplay").innerText = leftTime + " 秒";
-    if (leftTime <= 0) {
-      // ↑ 减到 0 或以下
-      clearInterval(timerId);
-      // ↑ 停止定时器
-      timerId = null;
-      // ↑ 把编号重置为 null，方便下次重新开始
-      $("timerDisplay").innerText = "时间到！";
+  startTimer() {
+    if (!this.validateTimer()) {
+      // ↑ 方法里调用另一个方法，记得加 this. 前缀
+      $("timerDisplay").innerText = "请输入一个正整数（秒）";
+      return;
     }
-  }, 1000);
-}
+    if (this.timerId !== null) clearInterval(this.timerId);
+    // ↑ 原来的 timerId 现在都换成 this.timerId
+    const seconds = Number($("timerInput").value);
+    this.leftTime = seconds;
+    // ↑ leftTime 换成 this.leftTime
+    $("timerDisplay").innerText = this.leftTime + " 秒";
 
-function resetTimer() {
-  // ↑ 点"重置"时执行
-  if (timerId !== null) {
-    clearInterval(timerId);
-    // ↑ 如果有定时器在跑，先停掉
-    timerId = null;
+    this.timerId = setInterval(() => {
+      // ↑ 箭头函数：this 不会被改变，仍然指向"这个实例"
+      this.leftTime--;
+      $("timerDisplay").innerText = this.leftTime + " 秒";
+      if (this.leftTime <= 0) {
+        clearInterval(this.timerId);
+        this.timerId = null;
+        $("timerDisplay").innerText = "时间到！";
+      }
+    }, 1000);
   }
-  leftTime = 0;
-  $("timerDisplay").innerText = "0 秒";
-  $("timerInput").value = "";
-  // ↑ 清空输入框
+
+  resetTimer() {
+    if (this.timerId !== null) {
+      clearInterval(this.timerId);
+      this.timerId = null;
+    }
+    this.leftTime = 0;
+    $("timerDisplay").innerText = "0 秒";
+    $("timerInput").value = "";
+  }
 }
 
 export function initTimer() {
-  on("btnStartTimer", "click", startTimer);
-  on("btnResetTimer", "click", resetTimer);
-  on("timerInput", "input", validateTimer);
-  // ↑ 在输入框每敲一个字，就实时校验一次（即时给红框/禁用反馈）
+  const timer = new Timer();
+  // ↑ new Timer() = 用"模具"压出实例，同时自动执行 constructor 完成初始化
+  on("btnStartTimer", "click", () => timer.startTimer());
+  // ↑ 点"开始"：用箭头函数包一层，调用这个实例的 startTimer 方法
+  on("btnResetTimer", "click", () => timer.resetTimer());
+  // ↑ 点"重置"：调用实例的 resetTimer 方法
+  on("timerInput", "input", () => timer.validateTimer());
+  // ↑ 输入时：调用实例的 validateTimer 方法（实时红框/禁用反馈）
 }
