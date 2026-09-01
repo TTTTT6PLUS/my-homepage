@@ -1,6 +1,6 @@
 // 倒计时器：输入秒数，开始后每秒减 1，到 0 提醒；带输入校验
 
-import { $, on } from "./utils.js";
+import { $, on, validateField } from "./utils.js";
 
 class Timer {
   // ↑ 用 class 声明一个"类"，就好比一张"倒计时器图纸"（模具）
@@ -14,12 +14,9 @@ class Timer {
 
 
   validateTimer() {
-    // ↑ 方法：没有 function 关键字，直接"名字 + 括号"
-    const val = $("timerInput").value.trim();
-    const ok = /^\d+$/.test(val) && Number(val) > 0;
-    $("timerInput").classList.toggle("invalid", !ok);
-    $("btnStartTimer").disabled = !ok;
-    return ok;
+    return validateField("timerInput", "btnStartTimer", (val) =>
+      /^\d+$/.test(val) && Number(val) > 0
+    );
   }
 
   startTimer() {

@@ -1,11 +1,9 @@
-// 待办清单（To-Do List）：增删改查 + 筛选排序 + 进度条 + localStorage 持久化
-
-import { $, on, makeButton, notify } from "./utils.js";
+import { $, on, makeButton, notify, loadJSON, saveJSON, onEnter } from "./utils.js";
 // ↑ 在原有基础上，多借一个 notify 进来
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-// ↑ 从 localStorage 读回已存的任务数组；若是第一次（null），则用空数组 [] 兜底。
-//   JSON.parse 是把存进去的字符串还原成数组
+const KEY = "tasks";
+
+let tasks = loadJSON(KEY, []);
 let filterMode = "all";
 // ↑ 记录"当前筛选模式"：all 全部 / active 未完成 / done 已完成
 let showActiveFirst = false;
@@ -16,8 +14,7 @@ let draggedIndex = null;
 //   （用模块级变量，因为拖拽的每一步事件都要共享"谁在被拖"这份信息）
 
 function saveTasks() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-  // ↑ 把 tasks 数组转成字符串，存进 localStorage（因为 storage 只能存字符串）
+  saveJSON(KEY, tasks);
 }
 
 function getVisibleTasks() {
@@ -302,8 +299,7 @@ export function initTodo() {
   on("btnCompleteAll", "click", completeAll);
   on("btnClearDone", "click", clearDone);
   on("btnExport", "click", exportTasks);
-  on("todoInput", "keydown", (e) => { if (e.key === "Enter") addTodo(); });
-  // ↑ 在待办输入框按回车，等价于点"添加"
+  onEnter("todoInput", addTodo);
   on("btnFilterAll", "click", () => setFilter("all"));
   on("btnFilterActive", "click", () => setFilter("active"));
   on("btnFilterDone", "click", () => setFilter("done"));

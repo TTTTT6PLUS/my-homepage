@@ -1,14 +1,13 @@
-// 幸运抽签：往名单里加名字，点"开始抽签"随机抽一个；名单会存进 localStorage
-
-import { $, on, makeButton } from "./utils.js";
+import { $, on, makeButton, loadJSON, saveJSON } from "./utils.js";
 // ↑ 引入 $、on、makeButton 三个工具
 
-let pool = JSON.parse(localStorage.getItem("pool")) || [];
+const KEY = "pool";
+
+let pool = loadJSON(KEY, []);
 // ↑ 从 localStorage 读回名单数组；第一次没存过则为空数组 [] 兜底
 
 function savePool() {
-  localStorage.setItem("pool", JSON.stringify(pool));
-  // ↑ 把名单数组转成字符串存进 localStorage（storage 只能存字符串）
+  saveJSON(KEY, pool);
 }
 
 function renderPool() {

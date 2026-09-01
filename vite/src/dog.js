@@ -1,6 +1,6 @@
 // 随机狗狗：从互联网 API 抓一张狗图显示，带防连点、加载锁定、超时提示
 
-import { $, on } from "./utils.js";
+import { $, on, fetchJSON } from "./utils.js";
 
 let loading = false;
 // ↑ 开关：记录"现在是不是正在请求"，防止用户连点导致重复请求
@@ -21,19 +21,8 @@ async function getDog() {
   $("dogStatus").innerText = "加载中...";
   // ↑ 状态提示也改
 
-  const controller = new AbortController();
-  // ↑ 造一个"中断器"，可以手动喊停请求
-  const timer = setTimeout(() => controller.abort(), 5000);
-  // ↑ 定一个 5 秒闹钟，超时就调用 abort() 主动中断请求
-
   try {
-    const res = await fetch("https://dog.ceo/api/breeds/image/random", {
-      signal: controller.signal,
-      // ↑ 把中断信号交给 fetch，这样 abort() 才能中断它
-    });
-    // ↑ await 等待请求完成，res 是响应对象
-    const data = await res.json();
-    // ↑ 把响应体解析成 JSON 对象（里面有图片地址 data.message）
+    const data = await fetchJSON("https://dog.ceo/api/breeds/image/random");
     $("dogImg").src = data.message;
     // ↑ 把图片地址设给 img 元素
     $("dogImg").classList.remove("hidden");
@@ -46,8 +35,6 @@ async function getDog() {
     // ↑ 区分：超时的错误名是 AbortError，其它则是普通失败
   } finally {
     // ↑ finally 无论成功失败都会执行，用来做"收尾清理"
-    clearTimeout(timer);
-    // ↑ 取消那个 5 秒闹钟
     btn.disabled = false;
     // ↑ 恢复按钮可用
     btn.textContent = "来一只狗狗";

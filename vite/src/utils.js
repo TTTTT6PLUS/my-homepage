@@ -76,3 +76,73 @@ export function notify(title, body) {
   }
   // ↑ 被拒过（denied）就安静跳过
 }
+
+// ===== 第 30 关新增：通用存储 / 网络 / 输入工具 =====
+
+// 从 localStorage 读一个值，自动 JSON 解析；键不存在或解析失败时返回兜底值
+export function loadJSON(key, fallback = null) {
+  const raw = localStorage.getItem(key);
+  // ↑ 先原始读出来（可能是 null）
+  if (raw === null) return fallback;
+  // ↑ 没存过，直接用兜底值
+  try {
+    return JSON.parse(raw);
+    // ↑ 把字符串还原成数组/对象/数字等
+  } catch {
+    return raw;
+    // ↑ 解析失败：说明存的是"裸字符串"（不是 JSON），直接原样返回，兼容旧数据
+  }
+}
+
+// 把一个值 JSON 序列化后写进 localStorage（数字/布尔/数组/对象都能存）
+export function saveJSON(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+  // ↑ JSON.stringify 把任意值转成字符串，再存
+}
+
+// 删除某个键（和上面两个凑成一套，语义更统一）
+export function removeKey(key) {
+  localStorage.removeItem(key);
+}
+
+// 带超时的 fetch：请求 JSON，超过 timeout 毫秒自动中断
+export async function fetchJSON(url, timeout = 5000) {
+  const controller = new AbortController();
+  // ↑ 造一个"中断器"
+  const timer = setTimeout(() => controller.abort(), timeout);
+  // ↑ 到点没完成就主动 abort
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    // ↑ 请求，signal 让 abort() 能中断它
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    // ↑ 响应不 ok（如 404），主动抛错
+    return await res.json();
+    // ↑ 解析并返回 JSON 结果
+  } finally {
+    clearTimeout(timer);
+    // ↑ 无论成功失败，都要关掉那个超时闹钟
+  }
+}
+
+// 回车提交：在某个输入框按 Enter 键，就执行 fn
+export function onEnter(id, fn) {
+  on(id, "keydown", (e) => {
+    // ↑ 复用咱们自己的 on 绑定 keydown
+    if (e.key === "Enter") fn();
+    // ↑ 命中回车才执行
+  });
+}
+
+// 输入校验：读输入框 → 按 tester 判断 → 自动挂"红框 + 禁用按钮"，返回是否合法
+export function validateField(inputId, btnId, tester) {
+  const val = $(inputId).value.trim();
+  // ↑ 取输入并去首尾空格
+  const ok = tester(val);
+  // ↑ 用调用者传来的 tester 函数判断"合不合法"
+  $(inputId).classList.toggle("invalid", !ok);
+  // ↑ 不合法就加红框
+  $(btnId).disabled = !ok;
+  // ↑ 不合法就禁用按钮
+  return ok;
+  // ↑ 返回结果供调用者判断
+}

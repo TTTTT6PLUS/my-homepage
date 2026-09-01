@@ -1,15 +1,15 @@
 // 猜数字游戏：随机一个 1~100 的数，反复猜直到猜对，并记录最佳成绩
 
-import { $, on } from "./utils.js";
+import { $, on, loadJSON, saveJSON } from "./utils.js";
+
+const KEY = "bestScore";
 
 let secret = Math.floor(Math.random() * 100) + 1;
 // ↑ 随机生成 1~100 的秘密数字：Math.random() 取 0~1，*100 得 0~99，
 //   向下取整后 +1，范围就是 1~100
 let guessCount = 0;
 // ↑ 记录本轮已经猜了几次
-let bestScore = Number(localStorage.getItem("bestScore")) || 0;
-// ↑ 从 localStorage 读回历史最佳次数；没有则 0。
-//   存的是字符串，所以用 Number() 转回数字
+let bestScore = loadJSON(KEY, 0);
 
 function guessNumber() {
   // ↑ 点"猜！"时执行
@@ -32,8 +32,7 @@ function guessNumber() {
     if (bestScore === 0 || guessCount < bestScore) {
       // ↑ 如果还没记录、或这次比历史最佳更少，就更新最佳成绩
       bestScore = guessCount;
-      localStorage.setItem("bestScore", guessCount);
-      // ↑ 存进 localStorage
+      saveJSON(KEY, guessCount);
     }
     $("bestScore").innerText = "最佳成绩：" + bestScore + " 次";
   }
