@@ -36,14 +36,10 @@ jobs:
         run: npm run build
         working-directory: vite
 
-      - name: 组装新旧版本到同一个站点
+      - name: 组装站点
         run: |
           mkdir -p site
           cp -r vite/dist/* site/
-          cp -r Html site/Html
-          mkdir -p site/old
-          cp index.html site/old/index.html
-          cp avatar.svg site/old/avatar.svg
 
       - name: 上传构建产物
         uses: actions/upload-pages-artifact@v3
