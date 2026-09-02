@@ -22,6 +22,8 @@ import { initWin } from "./win.js";
 // ↑ 引入"窗口宽度显示"模块
 import { initReveal } from "./reveal.js";
 // ↑ 引入滚动显现模块
+import { initBackup } from "./backup.js";
+// ↑ 引入数据打包模块
 
 initTheme();
 // ↑ 启动深色模式（先做，让主题尽快生效）
@@ -41,6 +43,7 @@ initGuess();
 // ↑ 启动猜数字
 initShortcut();
 // ↑ 启动键盘快捷键
+initBackup();
 
 // ===== 懒加载：点按钮才下载对应模块 =====
 const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));
