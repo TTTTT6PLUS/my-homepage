@@ -20,11 +20,15 @@ import { initTheme } from "./theme.js";
 // ↑ 引入"深色模式"模块
 import { initWin } from "./win.js";
 // ↑ 引入"窗口宽度显示"模块
+import { initReveal } from "./reveal.js";
+// ↑ 引入滚动显现模块
 
 initTheme();
 // ↑ 启动深色模式（先做，让主题尽快生效）
 initWin();
 // ↑ 启动窗口宽度显示
+initReveal();
+// ↑ 启动滚动显现动画
 initGreet();
 // ↑ 启动打招呼功能
 initQuote();

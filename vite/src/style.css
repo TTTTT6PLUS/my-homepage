@@ -581,3 +581,20 @@ kbd {
   /* ↑ 下边框加粗，更像真实按键的立体感 */
   border-radius: 6px;
 }
+
+/* ---------- 第 32 关 · 滚动显现动画 ---------- */
+.block {
+  opacity: 0;
+  /* ↑ 默认完全透明（看不见） */
+  transform: translateY(24px);
+  /* ↑ 并且整体往下偏移 24px */
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  /* ↑ 透明度和位置变化都加 0.6 秒过渡，显现时才平滑 */
+}
+
+.block.show {
+  opacity: 1;
+  /* ↑ 加 .show 后变不透明 */
+  transform: translateY(0);
+  /* ↑ 回到原位 */
+}
