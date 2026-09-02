@@ -4,6 +4,8 @@ import "./style.css";
 // ↑ 引入全局样式（Vite 会自动处理，最终打包进页面）
 import { on, lazyInit } from "./utils.js";
 // ↑ 引入 on（绑事件）和 lazyInit（懒加载）两个工具
+import { initShortcut } from "./shortcut.js";
+// ↑ 引入键盘快捷键模块
 import { initGreet } from "./greet.js";
 // ↑ 引入"打招呼/改名/换肤色"模块的启动函数
 import { initQuote } from "./quote.js";
@@ -33,6 +35,8 @@ initDraw();
 // ↑ 启动抽签
 initGuess();
 // ↑ 启动猜数字
+initShortcut();
+// ↑ 启动键盘快捷键
 
 // ===== 懒加载：点按钮才下载对应模块 =====
 const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));

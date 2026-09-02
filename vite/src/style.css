@@ -515,3 +515,69 @@ button:disabled {
   opacity: 0.6;
   /* ↑ 半透明，看起来"点不了" */
 }
+
+/* ---------- 第 31 关 · 键盘快捷键帮助面板 ---------- */
+.help-overlay {
+  position: fixed;
+  /* ↑ 固定定位，脱离文档流，铺满整个屏幕 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  /* ↑ 半透明黑，做"蒙层"，让底下内容变暗 */
+  display: flex;
+  align-items: center;
+  /* ↑ 垂直居中面板 */
+  justify-content: center;
+  /* ↑ 水平居中面板 */
+  z-index: 10;
+  /* ↑ 保证盖在最上层 */
+}
+
+.help-overlay.hidden {
+  display: none;
+  /* ↑ 加 .hidden 就整个隐藏 */
+}
+
+.help-panel {
+  background: var(--card-bg);
+  /* ↑ 用卡片背景变量，深色模式自动切换 */
+  padding: 32px 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.help-panel h2 {
+  margin-top: 0;
+}
+
+.help-list {
+  list-style: none;
+  /* ↑ 去掉列表圆点 */
+  padding: 0;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.help-list li {
+  padding: 10px 0;
+  color: var(--text);
+  border-bottom: 1px dashed var(--track);
+}
+
+kbd {
+  /* ↑ <kbd> 标签表示"键盘按键"，给它做成小键帽的样子 */
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 4px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--blue-deep);
+  background: var(--track);
+  border: 1px solid var(--blue-line);
+  border-bottom-width: 2px;
+  /* ↑ 下边框加粗，更像真实按键的立体感 */
+  border-radius: 6px;
+}

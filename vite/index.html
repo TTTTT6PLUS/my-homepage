@@ -170,6 +170,20 @@
     </div>
   </div>
 
+  <!-- 快捷键帮助面板：默认隐藏，按 ? 弹出、Esc 或点按钮关闭 -->
+  <div id="shortcutHelp" class="help-overlay hidden">
+    <div class="help-panel">
+      <h2>⌨️ 键盘快捷键</h2>
+      <ul class="help-list">
+        <li><kbd>/</kbd> 聚焦 GitHub 搜索框</li>
+        <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> 快速添加待办</li>
+        <li><kbd>?</kbd> 打开此帮助面板</li>
+        <li><kbd>Esc</kbd> 关闭帮助面板</li>
+      </ul>
+      <button id="btnCloseHelp">知道了</button>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.js"></script>
   <!-- ↑ 引入 JS 入口文件；type="module" 才能用 import 导入其它模块 -->
 </body>
