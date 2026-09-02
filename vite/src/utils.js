@@ -146,3 +146,21 @@ export function validateField(inputId, btnId, tester) {
   return ok;
   // ↑ 返回结果供调用者判断
 }
+
+// lazyInit：传入一个"加载函数"，返回一个"启动函数"。
+// 第一次调用"启动函数"才真正加载并初始化；之后再调用直接走缓存，绝不会重复下载、重复绑定。
+export function lazyInit(loadFn) {
+  let promise = null;
+  // ↑ 用外层变量缓存"加载+初始化"的 Promise（闭包：内部箭头函数能一直访问它）
+  return () => {
+    // ↑ 返回一个"启动函数"，将来点按钮时就调它
+    if (!promise) {
+      // ↑ 第一次进来 promise 还是 null，说明从没加载过
+      promise = loadFn();
+      // ↑ 执行真正的加载（下载模块 + 初始化），把结果 Promise 存进缓存
+    }
+    // ↑ 第二次及以后进来，promise 已经存在，直接跳过 if，复用缓存
+    return promise;
+    // ↑ 把 Promise 返回给调用方，方便它 .then 等待加载完成
+  };
+}

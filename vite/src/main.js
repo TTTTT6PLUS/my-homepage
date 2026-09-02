@@ -2,21 +2,16 @@
 
 import "./style.css";
 // ↑ 引入全局样式（Vite 会自动处理，最终打包进页面）
-
+import { on, lazyInit } from "./utils.js";
+// ↑ 引入 on（绑事件）和 lazyInit（懒加载）两个工具
 import { initGreet } from "./greet.js";
 // ↑ 引入"打招呼/改名/换肤色"模块的启动函数
 import { initQuote } from "./quote.js";
 // ↑ 引入"摸鱼语录"模块
 import { initTodo } from "./todo.js";
 // ↑ 引入"待办清单"模块
-import { initTimer } from "./timer.js";
-// ↑ 引入"倒计时器"模块
 import { initDraw } from "./draw.js";
 // ↑ 引入"幸运抽签"模块
-import { initDog } from "./dog.js";
-// ↑ 引入"随机狗狗"模块
-import { initGithub } from "./github.js";
-// ↑ 引入"GitHub 查询"模块
 import { initGuess } from "./guess.js";
 // ↑ 引入"猜数字"模块
 import { initTheme } from "./theme.js";
@@ -34,13 +29,29 @@ initQuote();
 // ↑ 启动语录功能
 initTodo();
 // ↑ 启动待办清单
-initTimer();
-// ↑ 启动倒计时
 initDraw();
 // ↑ 启动抽签
-initDog();
-// ↑ 启动狗狗
-initGithub();
-// ↑ 启动 GitHub 查询
 initGuess();
 // ↑ 启动猜数字
+
+// ===== 懒加载：点按钮才下载对应模块 =====
+const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));
+// ↑ 造一个狗狗模块的"懒启动器"：第一次被调用时才去 import 并 initDog
+on("btnDog", "click", bootDog);
+// ↑ 点"来一只狗狗"按钮 → 触发懒启动器（第一次会下载代码并初始化）
+// 倒计时（点"开始/重置"或输入秒数才加载）
+const bootTimer = lazyInit(() => import("./timer.js").then((m) => m.initTimer()));
+// ↑ 造倒计时模块的懒启动器
+on("btnStartTimer", "click", bootTimer);
+// ↑ 点"开始"按钮触发
+on("btnResetTimer", "click", bootTimer);
+// ↑ 点"重置"按钮触发（防止用户先点重置）
+on("timerInput", "input", bootTimer);
+// ↑ 一输入秒数也触发（保证输入校验的实时红框能接上）
+// GitHub 查询（点"查询"或开始输入才加载）
+const bootGithub = lazyInit(() => import("./github.js").then((m) => m.initGithub()));
+// ↑ 造 GitHub 模块的懒启动器
+on("btnSearchUser", "click", bootGithub);
+// ↑ 点"查询"按钮触发
+on("ghName", "input", bootGithub);
+// ↑ 一输入用户名就触发（这样防抖搜索才能接上）
