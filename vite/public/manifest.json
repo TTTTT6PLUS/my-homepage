@@ -1,0 +1,18 @@
+{
+  "name": "我的个人主页",
+  "short_name": "主页",
+  "description": "一个边学边做的前端个人主页",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e0f2fe",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "avatar.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
