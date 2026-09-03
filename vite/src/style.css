@@ -766,3 +766,23 @@ body.dark select option {
   font-weight: bold;
   color: var(--blue-deep);
 }
+
+/* ---------- 第 38 关 · 技能图（Chart.js） ---------- */
+.skill-box {
+  position: relative;
+  /* ↑ 让内部 canvas 相对它定位撑满 */
+  max-width: 640px;
+  height: 340px;
+  margin: 16px auto 0;
+  padding: 10px 14px 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--blue-line);
+  border-radius: 12px;
+  /* ↑ 图表外框：白底卡片，跟主页风格统一 */
+}
+
+.skill-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+  /* ↑ Chart.js 会内联设置 canvas 尺寸，用 !important 强制撑满外框 */
+}

@@ -32,6 +32,8 @@ import { initTTS } from "./tts.js";
 // ↑ 引入"语音朗读"模块
 import { initGame } from "./fish.js";
 // ↑ 引入"接小鱼游戏"模块
+import { initSkillChart } from "./skill.js";
+// ↑ 引入"技能图"模块（Chart.js 数据可视化）
 
 initTheme();
 // ↑ 启动深色模式（先做，让主题尽快生效）
@@ -61,6 +63,8 @@ initTTS();
 // ↑ 启动语音朗读
 initGame();
 // ↑ 启动接小鱼游戏
+initSkillChart();
+// ↑ 启动技能图
 
 // ===== 懒加载：点按钮才下载对应模块 =====
 const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));

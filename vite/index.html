@@ -220,6 +220,17 @@
     </div>
 
     <div class="block">
+      <!-- ↑ 技能可视化区块 -->
+      <h2>我的技能树</h2>
+      <p class="intro">边学边记，用一张图看看前端技能成长~（数据为示例，以后可换成真实统计）</p>
+      <div class="skill-box">
+        <!-- ↑ 图表外框：定宽高，Chart.js 把图画在里面的 canvas 上 -->
+        <canvas id="skillChart"></canvas>
+        <!-- ↑ 这个 canvas 不需要 width/height 属性，Chart.js 会自己管理尺寸 -->
+      </div>
+    </div>
+
+    <div class="block">
       <h2>数据备份</h2>
       <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
       <button id="btnExportData">📥 导出数据</button>
