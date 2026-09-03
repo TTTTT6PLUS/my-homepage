@@ -207,6 +207,19 @@
     </div>
 
     <div class="block">
+      <!-- ↑ 接小鱼游戏区块 -->
+      <h2>接住小鱼</h2>
+      <p class="intro">移动鼠标控制鲸鱼，接住掉落的小鱼；漏掉 3 条就结束啦~</p>
+      <canvas id="fishCanvas" width="720" height="360"></canvas>
+      <!-- ↑ 游戏画布，内部像素 720×360 -->
+      <p id="fishStatus">🐟 移动鼠标接小鱼，漏 3 条就结束！</p>
+      <!-- ↑ 游戏状态提示文字 -->
+      <p class="fish-score">得分 <span id="fishScore">0</span> · 生命 <span id="fishLives">3</span></p>
+      <!-- ↑ 得分和剩余生命，JS 会实时改这两个数字 -->
+      <button id="btnFishRestart">🔄 重新开始</button>
+    </div>
+
+    <div class="block">
       <h2>数据备份</h2>
       <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
       <button id="btnExportData">📥 导出数据</button>

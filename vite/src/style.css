@@ -737,3 +737,32 @@ body.dark select option {
   background: #0f172a;
   color: #e2e8f0;
 }
+
+/* ---------- 第 37 关 · 接住小鱼游戏 ---------- */
+#fishCanvas {
+  /* ↑ 游戏画布：继承涂鸦画布那套"自适应尺寸"方案 */
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  margin: 0 auto;
+  background: #e0f2fe;
+  border: 2px solid var(--blue-line);
+  border-radius: 12px;
+  cursor: default;
+  /* ↑ 游戏不需要"十字准星"，保持普通鼠标 */
+  touch-action: none;
+  /* ↑ 手机上拖动时不让页面跟着滚 */
+}
+
+#fishStatus {
+  margin: 12px 0 4px;
+  color: var(--text);
+}
+
+.fish-score {
+  margin: 4px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--blue-deep);
+}
