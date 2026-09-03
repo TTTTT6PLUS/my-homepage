@@ -231,6 +231,28 @@
     </div>
 
     <div class="block">
+      <h2>迷你电子琴</h2>
+      <p class="intro">可以弹奏的线上电子琴</p>
+      <div id="piano">
+        <button class="piano-key" data-freq="261.63">Do</button>
+        <button class="piano-key" data-freq="293.66">Re</button>
+        <button class="piano-key" data-freq="329.63">Mi</button>
+        <button class="piano-key" data-freq="349.23">Fa</button>
+        <button class="piano-key" data-freq="392.00">Sol</button>
+        <button class="piano-key" data-freq="440.00">La</button>
+        <button class="piano-key" data-freq="493.88">Si</button>
+        <button class="piano-key" data-freq="523.25">Do'</button>
+      </div>
+      <select id="waveSelect">
+        <option value="sine">正弦（柔）</option>
+        <option value="square">方波（复古）</option>
+        <option value="triangle">三角（空灵）</option>
+        <option value="sawtooth">锯齿（电音）</option>
+      </select>
+      <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.5">
+    </div>
+
+    <div class="block">
       <h2>数据备份</h2>
       <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
       <button id="btnExportData">📥 导出数据</button>
@@ -240,21 +262,21 @@
   </div>
 
   <!-- 快捷键帮助面板：默认隐藏，按 ? 弹出、Esc 或点按钮关闭 -->
-  <div id="shortcutHelp" class="help-overlay hidden">
-    <div class="help-panel">
-      <h2>⌨️ 键盘快捷键</h2>
-      <ul class="help-list">
-        <li><kbd>/</kbd> 聚焦 GitHub 搜索框</li>
-        <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> 快速添加待办</li>
-        <li><kbd>?</kbd> 打开此帮助面板</li>
-        <li><kbd>Esc</kbd> 关闭帮助面板</li>
-      </ul>
-      <button id="btnCloseHelp">知道了</button>
+    <div id="shortcutHelp" class="help-overlay hidden">
+      <div class="help-panel">
+        <h2>⌨️ 键盘快捷键</h2>
+        <ul class="help-list">
+          <li><kbd>/</kbd> 聚焦 GitHub 搜索框</li>
+          <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> 快速添加待办</li>
+          <li><kbd>?</kbd> 打开此帮助面板</li>
+          <li><kbd>Esc</kbd> 关闭帮助面板</li>
+        </ul>
+        <button id="btnCloseHelp">知道了</button>
+      </div>
     </div>
-  </div>
 
-  <script type="module" src="/src/main.js"></script>
-  <!-- ↑ 引入 JS 入口文件；type="module" 才能用 import 导入其它模块 -->
+    <script type="module" src="/src/main.js"></script>
+    <!-- ↑ 引入 JS 入口文件；type="module" 才能用 import 导入其它模块 -->
 </body>
 
 </html>

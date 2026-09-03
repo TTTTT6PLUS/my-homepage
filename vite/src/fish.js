@@ -3,6 +3,8 @@
 
 import { $, on } from "./utils.js";
 // ↑ 引入 $（找元素）、on（绑事件）
+import { playNote } from "./audio.js";
+// ↑ 引入电子琴的"发声器"，给游戏配音效（第 39 关新增）
 
 const canvas = $("fishCanvas");
 // ↑ 游戏画布
@@ -195,6 +197,8 @@ function loop(t) {
           // ↑ 且横坐标落在鲸鱼身体范围内 → 接住！
           score += 1;
           // ↑ 加一分
+          playNote(880, 0.12);
+          // ↑ 播"叮"：880Hz（高音 A）短促一下，庆祝接住
           spawnGap = Math.max(0.4, spawnGap * 0.97);
           // ↑ 略微缩短出生间隔，游戏越来越难（下限 0.4 秒）
           updateScore();
@@ -203,6 +207,8 @@ function loop(t) {
           // ↑ 没接住，漏了
           lives -= 1;
           // ↑ 扣一条命
+          playNote(150, 0.25);
+          // ↑ 播"嘟"：150Hz（低音）拉长一点，提示漏鱼
           updateLives();
           // ↑ 刷新页面生命数
           if (lives <= 0) endGame();

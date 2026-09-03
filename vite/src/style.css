@@ -786,3 +786,64 @@ body.dark select option {
   height: 100% !important;
   /* ↑ Chart.js 会内联设置 canvas 尺寸，用 !important 强制撑满外框 */
 }
+
+/* ---------- 第 39 关 · 迷你电子琴 ---------- */
+#piano {
+  display: flex;
+  /* ↑ 琴键横排 */
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 520px;
+  margin: 14px auto 6px;
+  /* ↑ 琴键区居中、窄屏自动换行 */
+}
+
+.piano-key {
+  width: 52px;
+  height: 120px;
+  margin: 0;
+  /* ↑ 覆盖全局 button 的 margin-top */
+  padding: 0;
+  font-size: 16px;
+  color: var(--blue-deep);
+  background: #ffffff;
+  border: 2px solid var(--blue-line);
+  border-bottom: 6px solid var(--blue-line);
+  /* ↑ 下边框加厚：做出琴键的"厚度感" */
+  border-radius: 0 0 10px 10px;
+  /* ↑ 底部圆角，更像真实琴键 */
+  cursor: pointer;
+  transition: all 0.08s ease;
+  /* ↑ 响应要快（0.08 秒），弹琴才跟手 */
+}
+
+.piano-key:hover {
+  background: #f0f9ff;
+  /* ↑ 悬停微亮提示"可点" */
+}
+
+.piano-key:active {
+  background: var(--blue-lite);
+  border-bottom-width: 2px;
+  /* ↑ 按下时下边框变薄 */
+  transform: translateY(4px);
+  /* ↑ 整个键往下沉 4px：模拟真实按键的"按下去" */
+}
+
+body.dark .piano-key {
+  /* ↑ 深色模式琴键换肤 */
+  color: #e2e8f0;
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark .piano-key:active {
+  background: #3b4a63;
+  border-color: #475569;
+}
+
+#volSlider {
+  accent-color: var(--blue);
+  /* ↑ 音量滑块用主题蓝（和第 36 关 range 一致） */
+}
