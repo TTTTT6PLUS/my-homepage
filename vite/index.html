@@ -191,6 +191,22 @@
     </div>
 
     <div class="block">
+      <h2>语言朗诵</h2>
+      <p class="intro">按下按钮，可以进行朗诵~</p>
+      <p id="ttsStatus"></p>
+      <div class="speak-tools">
+        <label>文本内容<input id="ttsText" type="text"></label>
+        <label>语速滑块<input id="ttsRate" type="range" min="0.5" max="2" step="0.1" value="1"></label>
+        <label>音调滑块<input id="ttsPitch" type="range" min="0" max="2" step="0.1" value="1"></label>
+        <select id="ttsVoice">
+          <option value="">默认语音</option>
+        </select>
+        <button id="btnSpeak">🔊 朗读</button>
+        <button id="btnStop">⏹ 停止</button>
+      </div>
+    </div>
+
+    <div class="block">
       <h2>数据备份</h2>
       <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
       <button id="btnExportData">📥 导出数据</button>

@@ -664,3 +664,76 @@ input[type="range"] {
   margin-top: 0;
   /* ↑ 覆盖全局 button 的 margin-top: 20px，和工具栏对齐 */
 }
+
+/* ---------- 第 36 关 · 语音朗读 ---------- */
+.speak-tools {
+  display: flex;
+  /* ↑ 弹性布局，控件排成一行 */
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  /* ↑ 窄屏自动换行 */
+  margin-top: 12px;
+}
+
+.speak-tools label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.speak-tools input {
+  margin: 0;
+  /* ↑ 去掉全局 input 的 margin: 8px，让控件在 flex 里靠 gap 对齐 */
+}
+
+#ttsText {
+  width: 260px;
+  /* ↑ 朗读文本框宽一点，好放长句子 */
+}
+
+select {
+  /* ↑ <select> 是全站第一次用，补一套和 input 统一的基础样式 */
+  margin: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 2px solid var(--blue-line);
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  /* ↑ 鼠标变小手，提示可点开 */
+}
+
+.speak-tools select {
+  margin: 0;
+  /* ↑ 工具栏里的下拉框也去掉全局边距 */
+}
+
+.speak-tools button {
+  margin-top: 0;
+}
+
+#ttsStatus {
+  min-height: 1.6em;
+  /* ↑ 预留一行高度，状态文字出现时页面不跳动 */
+  margin: 12px 0 0;
+  color: var(--text);
+}
+
+body.dark select {
+  /* ↑ 深色模式下的下拉框单独配色（和 input 那套一致） */
+  color: #e2e8f0;
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark select option {
+  /* ↑ 下拉展开的选项列表也要深色，否则白底刺眼 */
+  background: #0f172a;
+  color: #e2e8f0;
+}

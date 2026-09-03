@@ -28,6 +28,8 @@ import { initPwa } from "./pwa.js";
 // ↑ 引入 PWA（离线应用）模块
 import { initBoard } from "./board.js";
 // ↑ 引入"涂鸦板"模块
+import { initTTS } from "./tts.js";
+// ↑ 引入"语音朗读"模块
 
 initTheme();
 // ↑ 启动深色模式（先做，让主题尽快生效）
@@ -53,6 +55,8 @@ initPwa();
 // ↑ 注册 Service Worker，让主页可离线访问
 initBoard();
 // ↑ 启动涂鸦板
+initTTS();
+// ↑ 启动语音朗读
 
 // ===== 懒加载：点按钮才下载对应模块 =====
 const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));
