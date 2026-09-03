@@ -1,6 +1,7 @@
 // 深色模式：切换 body 上的 dark 类，并用 localStorage 记住用户的选择
 
-import { $, loadJSON, saveJSON } from "./utils.js";
+import { $, on, loadJSON, saveJSON } from "./utils.js";
+// ↑ 从工具库引入 $（找元素）、on（绑事件）、loadJSON（读）、saveJSON（写）
 
 const KEY = "myTheme";
 // ↑ 定一个常量 KEY，作为 localStorage 的"钥匙"名称，避免每次写错字符串
