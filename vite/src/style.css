@@ -598,3 +598,69 @@ kbd {
   transform: translateY(0);
   /* ↑ 回到原位 */
 }
+
+/* ---------- 第 35 关 · 涂鸦板 ---------- */
+#boardCanvas {
+  display: block;
+  /* ↑ canvas 默认是行内元素，转成块级才好居中 */
+  width: 100%;
+  /* ↑ 显示宽度撑满容器 */
+  max-width: 720px;
+  /* ↑ 但不超过内部像素宽度 720，避免被放大模糊 */
+  height: auto;
+  /* ↑ 高度按宽高比自动缩放（720:360=2:1），画面不变形 */
+  margin: 0 auto;
+  /* ↑ 水平居中 */
+  background: #fff;
+  /* ↑ 画布底色白（和 JS 刷的白底一致，加载瞬间也不突兀） */
+  border: 2px solid var(--blue-line);
+  border-radius: 12px;
+  cursor: crosshair;
+  /* ↑ 鼠标变成"十字准星"，提示这里是画布 */
+  touch-action: none;
+  /* ↑ 关键：禁止浏览器把触摸当"滚动页面"，手指才能顺畅画线 */
+}
+
+.board-tools {
+  display: flex;
+  /* ↑ 弹性布局，工具排成一行 */
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  /* ↑ 屏幕窄时自动换行，不溢出 */
+  margin-top: 12px;
+}
+
+.board-tools label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.board-tools input {
+  margin: 0;
+  /* ↑ 覆盖全局 input 的 margin: 8px，让工具紧贴对齐 */
+}
+
+input[type="color"] {
+  width: 44px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  /* ↑ 取色器：调小一点、加圆角，更像一个色块按钮 */
+}
+
+input[type="range"] {
+  accent-color: var(--blue);
+  /* ↑ 滑块滑块颜色用主题蓝（accent-color 给原生控件染色） */
+  cursor: pointer;
+}
+
+.board-tools button {
+  margin-top: 0;
+  /* ↑ 覆盖全局 button 的 margin-top: 20px，和工具栏对齐 */
+}

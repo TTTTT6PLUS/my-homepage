@@ -174,6 +174,23 @@
     </div>
 
     <div class="block">
+      <!-- ↑ 涂鸦板区块（放 grid 外，整行更宽更好画） -->
+      <h2>涂鸦板</h2>
+      <p class="intro">按住鼠标（或手指）在画布上拖动画画，画完可以导出成 PNG 存下来~</p>
+      <canvas id="boardCanvas" width="720" height="360"></canvas>
+      <!-- ↑ <canvas> 是画布：width/height 是"内部像素"尺寸；id 给 JS 找它 -->
+      <div class="board-tools">
+        <!-- ↑ 画笔工具栏：颜色、粗细、清空、导出 -->
+        <label>🎨 颜色 <input id="boardColor" type="color" value="#2563eb"></label>
+        <!-- ↑ type="color" 是浏览器自带的取色器，value 是默认颜色 -->
+        <label>🖊 粗细 <input id="boardWidth" type="range" min="1" max="20" value="4"></label>
+        <!-- ↑ type="range" 是滑块，1~20 像素，默认 4 -->
+        <button id="btnBoardClear">🗑 清空</button>
+        <button id="btnBoardExport">📥 导出 PNG</button>
+      </div>
+    </div>
+
+    <div class="block">
       <h2>数据备份</h2>
       <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
       <button id="btnExportData">📥 导出数据</button>
