@@ -1,0 +1,12 @@
+/* style.css —— 全局基础样式（所有组件共享，不加 scoped） */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #dbeafe 0%, #f0f9ff 100%);
+  min-height: 100vh;
+  color: #1e293b;
+}
