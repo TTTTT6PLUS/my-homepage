@@ -30,7 +30,7 @@
     "skipLibCheck": true,
     // ↑ 跳过 node_modules 里第三方类型文件的检查（提速）
 
-    "isolatedModules": true,
+    "isolatedModules": true
     // ↑ 每个文件可独立转译（Vite 的要求）
   },
 

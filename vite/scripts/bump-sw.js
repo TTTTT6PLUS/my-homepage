@@ -14,10 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const swPath = path.join(__dirname, "..", "public", "sw.js");
 // ↑ 往上跳一级，定位到 public/sw.js
 
-const stamp = new Date()
-  .toISOString()
-  .replace(/[-:T]/g, "")
-  .slice(0, 12);
+const stamp = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 12);
 // ↑ 造时间戳：把 "2026-09-02T10:30:00.000Z" 变成 "202609021030"（年月日 + 时分）
 
 const version = `my-homepage-${stamp}`;
@@ -28,7 +25,7 @@ const code = readFileSync(swPath, "utf8");
 
 const newCode = code.replace(
   /const CACHE_NAME = "[^"]*";/,
-  `const CACHE_NAME = "${version}";`
+  `const CACHE_NAME = "${version}";`,
 );
 // ↑ 用正则找出原来那句 CACHE_NAME 定义，整句替换成新版本号
 

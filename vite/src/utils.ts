@@ -7,20 +7,23 @@ export const $ = <T extends HTMLElement = HTMLElement>(id: string): T =>
 //   （TypeScript 版：泛型 T 默认 HTMLElement，返回"非空"的该类型元素，
 //     需要精确类型时可写 $<HTMLInputElement>("id") 这样的调用形式）
 
-export const on = (
+export const on = <K extends keyof HTMLElementEventMap>(
   id: string,
-  event: string,
-  fn: (...args: any[]) => void
+  event: K,
+  fn: (e: HTMLElementEventMap[K]) => void,
 ): void => {
   $(id).addEventListener(event, fn);
 };
 // ↑ 定义 on 函数：给"某个 id 的元素"绑定"某个事件"，触发时执行 fn。
+//   （TypeScript 版：K 是事件名，如 "click"；HTMLElementEventMap[K] 会自动
+//     推出对应的事件对象类型，如 MouseEvent。这样回调参数 e 就有精确类型，
+//     不用再写 any，也比以前更安全——传错事件名会直接编译报错）
 //   例如 on("btnDog", "click", getDog) = 点狗狗按钮时执行 getDog
 
 export function makeButton(
   text: string,
   className: string,
-  onClick?: () => void
+  onClick?: () => void,
 ): HTMLButtonElement {
   // ↑ 定义 makeButton 函数：动态创建一个按钮，返回它
   const btn = document.createElement("button");
@@ -36,9 +39,9 @@ export function makeButton(
 }
 
 // 防抖：连续触发时，等"停顿" delay 毫秒后才真正执行一次
-export function debounce<A extends any[]>(
+export function debounce<A extends unknown[]>(
   fn: (...args: A) => void,
-  delay: number
+  delay: number,
 ): (...args: A) => void {
   let timer: number | null = null;
   // ↑ 用外层变量记住"定时器"的编号（闭包：内层函数能访问它）
@@ -52,9 +55,9 @@ export function debounce<A extends any[]>(
 }
 
 // 节流：固定间隔 delay 毫秒内，最多执行一次
-export function throttle<A extends any[]>(
+export function throttle<A extends unknown[]>(
   fn: (...args: A) => void,
-  delay: number
+  delay: number,
 ): (...args: A) => void {
   let last = 0;
   // ↑ 记录"上一次真正执行"的时间戳（闭包变量）
@@ -98,17 +101,21 @@ export function notify(title: string, body: string): void {
 
 // ===== 第 30 关新增：通用存储 / 网络 / 输入工具 =====
 
-// 从 localStorage 读一个值，自动 JSON 解析；键不存在或解析失败时返回兜底值
-export function loadJSON<T = any>(key: string, fallback: T = null as any): any {
+// 从 localStorage 读一个值，自动 JSON 解析
+// 用法一：loadJSON("tasks", []) —— 键不存在时返回兜底值 []，类型就是 T
+// 用法二：loadJSON("myName") —— 不传兜底值时，返回 T | null（没存过就是 null）
+export function loadJSON<T>(key: string, fallback: T): T;
+export function loadJSON<T = string>(key: string): T | null;
+export function loadJSON<T>(key: string, fallback?: T): T | null {
   const raw = localStorage.getItem(key);
   // ↑ 先原始读出来（可能是 null）
-  if (raw === null) return fallback;
-  // ↑ 没存过，直接用兜底值
+  if (raw === null) return fallback ?? null;
+  // ↑ 没存过：有兜底值就返回兜底值，没有就返回 null
   try {
-    return JSON.parse(raw);
-    // ↑ 把字符串还原成数组/对象/数字等
+    return JSON.parse(raw) as T;
+    // ↑ 把字符串还原成 T 类型的值（数组/对象/数字等）
   } catch {
-    return raw;
+    return raw as unknown as T;
     // ↑ 解析失败：说明存的是"裸字符串"（不是 JSON），直接原样返回，兼容旧数据
   }
 }
@@ -125,7 +132,11 @@ export function removeKey(key: string): void {
 }
 
 // 带超时的 fetch：请求 JSON，超过 timeout 毫秒自动中断
-export async function fetchJSON(url: string, timeout = 5000): Promise<any> {
+// 泛型 T 表示"你预期返回的数据形状"，例如 fetchJSON<{ name: string }>(url)
+export async function fetchJSON<T = unknown>(
+  url: string,
+  timeout = 5000,
+): Promise<T> {
   const controller = new AbortController();
   // ↑ 造一个"中断器"
   const timer = setTimeout(() => controller.abort(), timeout);
@@ -135,8 +146,8 @@ export async function fetchJSON(url: string, timeout = 5000): Promise<any> {
     // ↑ 请求，signal 让 abort() 能中断它
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     // ↑ 响应不 ok（如 404），主动抛错
-    return await res.json();
-    // ↑ 解析并返回 JSON 结果
+    return (await res.json()) as T;
+    // ↑ 解析并返回 JSON 结果（按调用方声明的 T 类型返回）
   } finally {
     clearTimeout(timer);
     // ↑ 无论成功失败，都要关掉那个超时闹钟
@@ -156,7 +167,7 @@ export function onEnter(id: string, fn: () => void): void {
 export function validateField(
   inputId: string,
   btnId: string,
-  tester: (val: string) => boolean
+  tester: (val: string) => boolean,
 ): boolean {
   const val = $<HTMLInputElement>(inputId).value.trim();
   // ↑ 取输入并去首尾空格
@@ -173,7 +184,7 @@ export function validateField(
 // lazyInit：传入一个"加载函数"，返回一个"启动函数"。
 // 第一次调用"启动函数"才真正加载并初始化；之后再调用直接走缓存，绝不会重复下载、重复绑定。
 export function lazyInit(
-  loadFn: () => Promise<unknown>
+  loadFn: () => Promise<unknown>,
 ): () => Promise<unknown> {
   let promise: Promise<unknown> | null = null;
   // ↑ 用外层变量缓存"加载+初始化"的 Promise（闭包：内部箭头函数能一直访问它）

@@ -1,11 +1,19 @@
-import { $, on, makeButton, notify, loadJSON, saveJSON, onEnter } from "./utils";
+import {
+  $,
+  on,
+  makeButton,
+  notify,
+  loadJSON,
+  saveJSON,
+  onEnter,
+} from "./utils";
 // ↑ 在原有基础上，多借一个 notify 进来
 
 const KEY = "tasks";
 
 type Task = { text: string; done: boolean };
 
-let tasks: Task[] = loadJSON(KEY, []);
+let tasks: Task[] = loadJSON<Task[]>(KEY, []);
 let filterMode: "all" | "active" | "done" = "all";
 // ↑ 记录"当前筛选模式"：all 全部 / active 未完成 / done 已完成
 let showActiveFirst = false;
@@ -21,11 +29,11 @@ function saveTasks(): void {
 
 function getVisibleTasks(): Task[] {
   // ↑ 计算出"当前应该显示的"任务列表（筛选 + 排序后）
-  let list = tasks.filter((t) => {
+  const list = tasks.filter((t) => {
     // ↑ filter 会遍历每个任务 t，返回一个新的数组
-    if (filterMode === "active") return !t.done;  // 只看未完成
-    if (filterMode === "done") return t.done;     // 只看已完成
-    return true;                                  // 其余情况：全部保留
+    if (filterMode === "active") return !t.done; // 只看未完成
+    if (filterMode === "done") return t.done; // 只看已完成
+    return true; // 其余情况：全部保留
   });
 
   if (showActiveFirst) {
@@ -105,7 +113,7 @@ function renderTodo(): void {
     li.append(
       makeButton("完成", "btn-sm btn-done"),
       makeButton("删除", "btn-sm btn-del"),
-      makeButton("编辑", "btn-sm btn-edit")
+      makeButton("编辑", "btn-sm btn-edit"),
     );
     // ↑ 用 makeButton 造三个小按钮，append 一次性塞进 li；
     //   注意这里不传第三个参数，所以不单独绑事件（交给事件委托统一处理）
@@ -163,7 +171,9 @@ function handleDragOver(e: DragEvent): void {
   //   drop 事件才有机会触发
   const li = (e.target as HTMLElement).closest("li");
   if (!li) return;
-  document.querySelectorAll("#todoList li").forEach((el) => el.classList.remove("drag-over"));
+  document
+    .querySelectorAll("#todoList li")
+    .forEach((el) => el.classList.remove("drag-over"));
   // ↑ 先把所有条目的"即将放入"标记清掉，保证同一时刻只有一个高亮
   if (Number(li.dataset.index) !== draggedIndex) {
     // ↑ 只有悬停在自己以外的条目上，才给放入提示
@@ -197,11 +207,12 @@ function handleDrop(e: DragEvent): void {
   // ↑ 按新顺序重新渲染
 }
 
-function handleDragEnd(e: DragEvent): void {
+function handleDragEnd(): void {
   // ↑ 拖拽结束（无论有没有成功放下）都会触发，专门用来收尾清理
-  document.querySelectorAll(".dragging, .drag-over").forEach((el) =>
-    el.classList.remove("dragging", "drag-over")
-  );
+  //   （不需要用到事件对象，所以不写参数）
+  document
+    .querySelectorAll(".dragging, .drag-over")
+    .forEach((el) => el.classList.remove("dragging", "drag-over"));
   // ↑ 把页面上所有拖拽相关样式一次性清掉
   draggedIndex = null;
   // ↑ 重置"谁在被拖"的记录
@@ -234,7 +245,8 @@ function updateProgress(): void {
   // ↑ 更新完成率和进度条
   const done = tasks.reduce((acc, t) => acc + (t.done ? 1 : 0), 0);
   // ↑ reduce 累加"已完成"的数量
-  const percent = tasks.length === 0 ? 0 : Math.round((done / tasks.length) * 100);
+  const percent =
+    tasks.length === 0 ? 0 : Math.round((done / tasks.length) * 100);
   // ↑ 完成率 = 已完成 / 总数 * 100；任务为空时直接 0
   $("todoBar").style.width = percent + "%";
   // ↑ 把进度条内层宽度设成对应百分比

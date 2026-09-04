@@ -1,7 +1,7 @@
 // ===== Service Worker：离线管家 =====
 // 它运行在独立线程，能拦截页面发出的网络请求，实现"先缓存、再联网"
 
-const CACHE_NAME = "my-homepage-202609040228";
+const CACHE_NAME = "my-homepage-202609040307";
 // ↑ 缓存版本号：每次构建会由 scripts/bump-sw.js 自动改成新时间戳，浏览器才会刷新离线缓存
 
 const PRECACHE = ["./", "./index.html", "./avatar.svg", "./manifest.json"];
@@ -12,10 +12,11 @@ self.addEventListener("install", (event) => {
   // ↑ "安装"阶段：SW 第一次被浏览器下载时触发
   event.waitUntil(
     // ↑ waitUntil 告诉浏览器"先别急着宣布装完"，等里面的活干完再说
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       // ↑ 打开（不存在就新建）一个叫 CACHE_NAME 的缓存仓库
-      .then((cache) => cache.addAll(PRECACHE))
-      // ↑ 把清单里的资源一次性塞进仓库；任何一个下载失败，整个安装都会失败
+      .then((cache) => cache.addAll(PRECACHE)),
+    // ↑ 把清单里的资源一次性塞进仓库；任何一个下载失败，整个安装都会失败
   );
   self.skipWaiting();
   // ↑ 新 SW 装好后，不等待旧页面关闭，立刻接管控制权
@@ -25,7 +26,8 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   // ↑ "激活"阶段：新 SW 接管控制权时触发
   event.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       // ↑ 拿到浏览器里所有缓存仓库的名字（可能残留旧的 v1、v2……）
       .then((keys) =>
         Promise.all(
@@ -33,10 +35,10 @@ self.addEventListener("activate", (event) => {
           keys
             .filter((key) => key !== CACHE_NAME)
             // ↑ 只留下"名字不等于当前版本"的（即旧版本）
-            .map((key) => caches.delete(key))
-            // ↑ 逐个删掉旧仓库，避免垃圾越积越多
-        )
-      )
+            .map((key) => caches.delete(key)),
+          // ↑ 逐个删掉旧仓库，避免垃圾越积越多
+        ),
+      ),
   );
   self.clients.claim();
   // ↑ 立即接管所有已打开的页面，不用非得刷新一次才生效
@@ -69,6 +71,6 @@ self.addEventListener("fetch", (event) => {
         return res;
         // ↑ 把真正拿到的响应交还给页面
       });
-    })
+    }),
   );
 });

@@ -1,0 +1,6 @@
+# .prettierignore —— 告诉排版师"哪些文件别碰"
+# 构建产物：每次 build 都会重新生成，排版了也白排
+dist
+node_modules
+# 锁文件：机器生成的大 JSON，不需要排版
+package-lock.json

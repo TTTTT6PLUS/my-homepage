@@ -3,7 +3,7 @@ import { $, on, makeButton, loadJSON, saveJSON } from "./utils";
 
 const KEY = "pool";
 
-let pool: string[] = loadJSON(KEY, []);
+const pool: string[] = loadJSON<string[]>(KEY, []);
 // ↑ 从 localStorage 读回名单数组；第一次没存过则为空数组 [] 兜底
 
 function savePool(): void {

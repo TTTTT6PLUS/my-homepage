@@ -22,17 +22,23 @@ async function getDog(): Promise<void> {
   // ↑ 状态提示也改
 
   try {
-    const data = await fetchJSON("https://dog.ceo/api/breeds/image/random");
+    const data = await fetchJSON<{ message: string }>(
+      "https://dog.ceo/api/breeds/image/random",
+    );
+    // ↑ fetchJSON<{ message: string }>：告诉泛型"我只要 message 这个字符串字段"
     const img = $<HTMLImageElement>("dogImg");
     img.src = data.message;
     // ↑ 把图片地址设给 img 元素
     img.classList.remove("hidden");
     // ↑ 去掉 hidden 类，让图片显示出来
     $("dogStatus").innerText = "这就是你的狗狗！";
-  } catch (err: any) {
-    // ↑ 出错（超时或断网）会跳到这里
-    $("dogStatus").innerText =
-      err.name === "AbortError" ? "网络太慢，稍后再试~" : "抓狗失败，检查网络~";
+  } catch (err) {
+    // ↑ 出错（超时或断网）会跳到这里；err 类型是 unknown，要先判断再取属性
+    const isTimeout = err instanceof DOMException && err.name === "AbortError";
+    // ↑ 只有"手动中断请求"产生的错误，名字才叫 AbortError（也就是超时）
+    $("dogStatus").innerText = isTimeout
+      ? "网络太慢，稍后再试~"
+      : "抓狗失败，检查网络~";
     // ↑ 区分：超时的错误名是 AbortError，其它则是普通失败
   } finally {
     // ↑ finally 无论成功失败都会执行，用来做"收尾清理"

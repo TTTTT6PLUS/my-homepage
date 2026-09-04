@@ -22,9 +22,7 @@ const SKILLS: { name: string; score: number; color: string }[] = [
 
 function themeColor(varName: string, fallback: string): string {
   // ↑ 读 CSS 变量当前值（用来给图表文字上色，深浅色主题都协调）
-  const val = getComputedStyle(document.body)
-    .getPropertyValue(varName)
-    .trim();
+  const val = getComputedStyle(document.body).getPropertyValue(varName).trim();
   // ↑ 拿 body 上定义的变量，比如 --text
   return val || fallback;
   // ↑ 没读到就用兜底色

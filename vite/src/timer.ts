@@ -17,8 +17,10 @@ class Timer {
   }
 
   validateTimer(): boolean {
-    return validateField("timerInput", "btnStartTimer", (val) =>
-      /^\d+$/.test(val) && Number(val) > 0
+    return validateField(
+      "timerInput",
+      "btnStartTimer",
+      (val) => /^\d+$/.test(val) && Number(val) > 0,
     );
   }
 

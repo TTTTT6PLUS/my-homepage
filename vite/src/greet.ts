@@ -1,6 +1,7 @@
 import { $, on, loadJSON, saveJSON, removeKey, validateField } from "./utils";
 
-const KEY_NAME = "myName"; const KEY_GREEN = "green";
+const KEY_NAME = "myName";
+const KEY_GREEN = "green";
 
 let isGreen = false;
 // ↑ 记录"现在是不是绿色皮肤"；初始为 false（默认蓝白配色）
@@ -25,8 +26,10 @@ function changeColor(): void {
 }
 
 function validateName(): boolean {
-  return validateField("nameInput", "btnConfirmName", (name) =>
-    name.length >= 1 && name.length <= 20
+  return validateField(
+    "nameInput",
+    "btnConfirmName",
+    (name) => name.length >= 1 && name.length <= 20,
   );
 }
 

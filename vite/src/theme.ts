@@ -10,7 +10,9 @@ export function initTheme(): void {
   // ↑ 启动函数：main.js 会调用它
 
   // 1. 进页面时，先读上次记住的主题
-  if (loadJSON(KEY, "light") === "dark") {
+  //    loadJSON<string>：显式声明 T 是 string（否则会被推断成字面量 "light"，
+  //    导致下面和 "dark" 比较时 TS 认为"永远不可能相等"而报错）
+  if (loadJSON<string>(KEY, "light") === "dark") {
     document.body.classList.add("dark");
     // ↑ 给 body 加上 dark 类 → CSS 里 body.dark 那套深色变量就会生效
     $("btnTheme").textContent = "☀️ 切回白天";

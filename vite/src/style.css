@@ -380,7 +380,7 @@ input {
   /* ↑ 用变量，深色模式自动变浅 */
 }
 
-.progress>div {
+.progress > div {
   /* ↑ > 表示"直接子元素"，也就是里面的 #todoBar */
   width: 0;
   /* ↑ 初始宽度 0，JS 会改成对应百分比 */
@@ -409,7 +409,6 @@ input {
 
 /* 第 17 关 · 手机（屏幕宽度 ≤ 480px）时，套用这套专属样式 */
 @media (max-width: 480px) {
-
   /* ↑ 媒体查询：只有屏幕宽度 ≤ 480px（手机）时才生效 */
   body {
     padding: 16px 10px;
@@ -450,7 +449,6 @@ input {
 }
 
 @media (max-width: 700px) {
-
   /* ↑ 屏幕 ≤ 700px 时（平板竖屏、手机），改为单列 */
   .grid {
     grid-template-columns: 1fr;
@@ -459,7 +457,6 @@ input {
 
 /* ---------- 第 19 关 · CSS 动画 ---------- */
 @keyframes fadeInUp {
-
   /* ↑ 定义一个叫 fadeInUp 的动画：从下面淡入 */
   from {
     opacity: 0;
@@ -477,7 +474,6 @@ input {
 }
 
 @keyframes breathe {
-
   /* ↑ 定义"呼吸变色"动画：蓝→粉→蓝循环 */
   0%,
   100% {
@@ -588,7 +584,9 @@ kbd {
   /* ↑ 默认完全透明（看不见） */
   transform: translateY(24px);
   /* ↑ 并且整体往下偏移 24px */
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
   /* ↑ 透明度和位置变化都加 0.6 秒过渡，显现时才平滑 */
 }
 

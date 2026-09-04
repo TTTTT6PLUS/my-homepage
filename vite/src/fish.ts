@@ -11,8 +11,8 @@ const canvas = document.getElementById("fishCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 // ↑ 2D 画笔（第 35 关涂鸦板的老朋友）
 
-const W = canvas.width;   // 720：画布逻辑宽度
-const H = canvas.height;  // 360：画布逻辑高度
+const W = canvas.width; // 720：画布逻辑宽度
+const H = canvas.height; // 360：画布逻辑高度
 // ↑ 游戏里所有坐标都按这个内部尺寸算，鼠标坐标再换算进来
 
 const bucket = { x: W / 2 - 40, w: 80, h: 26, y: H - 34 };
@@ -118,7 +118,15 @@ function drawWhale(): void {
   ctx.fillStyle = "#bfdbfe";
   // ↑ 浅蓝画肚皮
   ctx.beginPath();
-  ctx.ellipse(cx - bucket.w * 0.08, cy + bucket.h * 0.12, bucket.w * 0.3, bucket.h * 0.22, 0, 0, Math.PI * 2);
+  ctx.ellipse(
+    cx - bucket.w * 0.08,
+    cy + bucket.h * 0.12,
+    bucket.w * 0.3,
+    bucket.h * 0.22,
+    0,
+    0,
+    Math.PI * 2,
+  );
   ctx.fill();
   // ↑ 肚皮是身体里靠下的小椭圆
   ctx.fillStyle = "#0f172a";

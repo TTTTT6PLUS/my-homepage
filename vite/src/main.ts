@@ -86,7 +86,9 @@ on("btnResetTimer", "click", bootTimer);
 on("timerInput", "input", bootTimer);
 // ↑ 一输入秒数也触发（保证输入校验的实时红框能接上）
 // GitHub 查询（点"查询"或开始输入才加载）
-const bootGithub = lazyInit(() => import("./github").then((m) => m.initGithub()));
+const bootGithub = lazyInit(() =>
+  import("./github").then((m) => m.initGithub()),
+);
 // ↑ 造 GitHub 模块的懒启动器
 on("btnSearchUser", "click", bootGithub);
 // ↑ 点"查询"按钮触发

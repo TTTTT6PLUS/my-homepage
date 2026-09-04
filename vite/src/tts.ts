@@ -39,9 +39,7 @@ function loadVoices(): void {
   // ↑ 问浏览器要全部声音；注意第一次调用常常返回空数组！
   if (voices.length === 0) return;
   // ↑ 空的就直接走人——等会儿 voiceschanged 事件会再叫我们一次
-  const zhVoices = voices.filter((v) =>
-    v.lang.toLowerCase().startsWith("zh")
-  );
+  const zhVoices = voices.filter((v) => v.lang.toLowerCase().startsWith("zh"));
   // ↑ 只留中文语音：lang 转小写后以 "zh" 开头（匹配 zh-CN / zh-TW / zh-HK）
   fillVoices(zhVoices.length ? zhVoices : voices);
   // ↑ 有中文就只填中文；万一系统连中文都没有，退而求其次全部填上

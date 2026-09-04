@@ -27,7 +27,18 @@ async function searchUser(): Promise<void> {
   $("ghResult").innerText = "查询中...";
 
   try {
-    const data = await fetchJSON(`https://api.github.com/users/${name}`);
+    // 定义"GitHub 用户接口"返回的数据形状（只声明我们用到的那几个字段）
+    interface GitHubUser {
+      avatar_url: string;
+      login: string;
+      public_repos: number;
+      followers: number;
+    }
+
+    const data = await fetchJSON<GitHubUser>(
+      `https://api.github.com/users/${name}`,
+    );
+    // ↑ fetchJSON<GitHubUser>：告诉泛型"按 GitHubUser 的形状来理解返回数据"
     const avatar = $<HTMLImageElement>("ghAvatar");
     avatar.src = data.avatar_url;
     // ↑ 设置头像
@@ -36,9 +47,10 @@ async function searchUser(): Promise<void> {
     $("ghResult").innerText =
       `用户名：${data.login}，公开仓库：${data.public_repos} 个，粉丝：${data.followers} 人`;
     // ↑ 模板字符串拼接出简介
-  } catch (err: any) {
-    // ↑ 出错时
-    if (err.name === "AbortError") {
+  } catch (err) {
+    // ↑ 出错时；err 是 unknown，先判断是不是"超时中断"再取属性
+    const isTimeout = err instanceof DOMException && err.name === "AbortError";
+    if (isTimeout) {
       // ↑ 超时
       $("ghResult").innerText = "网络太慢，稍后再试~";
     } else {

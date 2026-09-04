@@ -1,267 +1,312 @@
-<!DOCTYPE html>
+<!doctype html>
 <!-- ↑ 声明：这是一份 HTML5 文档，告诉浏览器用新标准来解析 -->
 <html lang="zh-CN">
-<!-- ↑ <html> 是整个网页的根；lang="zh-CN" 表示网页用简体中文，方便屏幕阅读器等识别 -->
+  <!-- ↑ <html> 是整个网页的根；lang="zh-CN" 表示网页用简体中文，方便屏幕阅读器等识别 -->
 
-<head>
-  <!-- ↑ <head> 里放的是"给浏览器看的配置信息"，不会直接显示在页面上 -->
-  <meta charset="UTF-8">
-  <!-- ↑ 指定字符编码为 UTF-8，这样中文才不会乱码 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- ↑ 让手机按设备宽度显示、初始不缩放，是响应式布局的基础 -->
-  <title>我的个人主页</title>
-  <!-- ↑ 浏览器标签页标题栏显示的文字 -->
-  <link rel="manifest" href="./manifest.json">
-  <!-- ↑ 告诉浏览器去哪找 PWA 的清单文件（应用的"身份证"） -->
-  <meta name="theme-color" content="#2563eb">
-  <!-- ↑ 手机浏览器地址栏/状态栏会染成这个主题色，和应用整体更统一 -->
-</head>
+  <head>
+    <!-- ↑ <head> 里放的是"给浏览器看的配置信息"，不会直接显示在页面上 -->
+    <meta charset="UTF-8" />
+    <!-- ↑ 指定字符编码为 UTF-8，这样中文才不会乱码 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ↑ 让手机按设备宽度显示、初始不缩放，是响应式布局的基础 -->
+    <title>我的个人主页</title>
+    <!-- ↑ 浏览器标签页标题栏显示的文字 -->
+    <link rel="manifest" href="./manifest.json" />
+    <!-- ↑ 告诉浏览器去哪找 PWA 的清单文件（应用的"身份证"） -->
+    <meta name="theme-color" content="#2563eb" />
+    <!-- ↑ 手机浏览器地址栏/状态栏会染成这个主题色，和应用整体更统一 -->
+  </head>
 
-<body>
-  <!-- ↑ <body> 里的内容才是用户真正能在屏幕上看到的 -->
-  <div class="card">
-    <!-- ↑ 用一个大容器 .card 把整页内容包起来，方便整体居中、加白底圆角 -->
+  <body>
+    <!-- ↑ <body> 里的内容才是用户真正能在屏幕上看到的 -->
+    <div class="card">
+      <!-- ↑ 用一个大容器 .card 把整页内容包起来，方便整体居中、加白底圆角 -->
 
-    <img class="avatar" src="avatar.svg" alt="我的头像">
-    <!-- ↑ 头像图片：src 是图片地址，alt 是图片加载失败时显示的文字 -->
+      <img class="avatar" src="avatar.svg" alt="我的头像" />
+      <!-- ↑ 头像图片：src 是图片地址，alt 是图片加载失败时显示的文字 -->
 
-    <button id="btnTheme">🌙 切换主题</button>
-    <!-- ↑ 主题切换按钮；id 是 JS 找它的"唯一身份证" -->
+      <button id="btnTheme">🌙 切换主题</button>
+      <!-- ↑ 主题切换按钮；id 是 JS 找它的"唯一身份证" -->
 
-    <h1 id="myName">你好，我是 TTTTT6</h1>
-    <!-- ↑ 一级标题，显示名字；id="myName" 让 JS 能改这段文字（改名功能） -->
+      <h1 id="myName">你好，我是 TTTTT6</h1>
+      <!-- ↑ 一级标题，显示名字；id="myName" 让 JS 能改这段文字（改名功能） -->
 
-    <p class="intro">我是一名正在学习前端开发的新手，喜欢把想法变成好看的网页。这里是我的个人主页，未来会越来越棒的！请多多指教。</p>
-    <!-- ↑ 一段自我介绍文字，<p> 是段落 -->
+      <p class="intro">
+        我是一名正在学习前端开发的新手，喜欢把想法变成好看的网页。这里是我的个人主页，未来会越来越棒的！请多多指教。
+      </p>
+      <!-- ↑ 一段自我介绍文字，<p> 是段落 -->
 
-    <h2>关于我</h2>
-    <!-- ↑ 二级标题 -->
+      <h2>关于我</h2>
+      <!-- ↑ 二级标题 -->
 
-    <ul class="about-list">
-      <!-- ↑ 无序列表 <ul>，里面是一条条 <li> 列表项 -->
-      <li>🎓 正在学：HTML / CSS / JavaScript</li>
-      <li>🌟 目标：成为一名前端工程师</li>
-      <li>🏠 坐标：中国</li>
-      <li>💬 一句话：热爱学习，乐于分享</li>
-    </ul>
+      <ul class="about-list">
+        <!-- ↑ 无序列表 <ul>，里面是一条条 <li> 列表项 -->
+        <li>🎓 正在学：HTML / CSS / JavaScript</li>
+        <li>🌟 目标：成为一名前端工程师</li>
+        <li>🏠 坐标：中国</li>
+        <li>💬 一句话：热爱学习，乐于分享</li>
+      </ul>
 
-    <p id="winWidth">窗口宽度：--px</p>
-    <!-- ↑ 显示窗口宽度，初始是占位文字，之后由 win.js 动态更新成真实像素值 -->
+      <p id="winWidth">窗口宽度：--px</p>
+      <!-- ↑ 显示窗口宽度，初始是占位文字，之后由 win.js 动态更新成真实像素值 -->
 
-    <div>
-      <!-- ↑ 普通容器，装下面几个兴趣"标签" -->
-      <span class="tag">睡觉</span>
-      <span class="tag">游戏</span>
-      <span class="tag">音乐</span>
-      <span class="tag">编程</span>
-      <!-- ↑ <span> 是行内小元素，配合 CSS 做成圆角"胶囊"小标签 -->
-    </div>
-
-    <div class="block">
-      <!-- ↑ 联系方式区块 -->
-      <a href="mailto:xxx@example.com">📧 邮箱</a>
-      <!-- ↑ mailto: 表示点击后打开系统邮件客户端写邮件 -->
-      <a href="https://github.com/" target="_blank">🐙 GitHub</a>
-      <!-- ↑ target="_blank" 表示点开后在"新标签页"打开链接 -->
-    </div>
-
-    <div class="grid">
-      <!-- ↑ .grid 是网格式布局容器，下面的每个 .block 就是"一格" -->
-
-      <div class="block">
-        <!-- ↑ 第一个功能块：打招呼/改名/换肤色 -->
-        <button id="btnHello">点我打招呼</button>
-        <button id="btnRename">改个名字</button>
-        <button id="btnSkin">换个肤色</button>
+      <div>
+        <!-- ↑ 普通容器，装下面几个兴趣"标签" -->
+        <span class="tag">睡觉</span>
+        <span class="tag">游戏</span>
+        <span class="tag">音乐</span>
+        <span class="tag">编程</span>
+        <!-- ↑ <span> 是行内小元素，配合 CSS 做成圆角"胶囊"小标签 -->
       </div>
 
       <div class="block">
-        <!-- ↑ 第二个功能块：改名输入框 + 摸鱼语录 -->
-        <input id="nameInput" type="text" placeholder="输入你的新名字">
-        <!-- ↑ 输入框：placeholder 是"提示文字"，未输入时灰色显示 -->
-        <button id="btnConfirmName">确认改名</button>
-        <p id="quoteText">点下面的按钮，抽一句摸鱼语录~</p>
-        <button id="btnQuote">随机摸鱼语录</button>
-        <button id="btnCopyQuote">📋 复制语录</button>
-        <!-- ↑ 新增：给"语录"再配一个"复制"按钮；id 是 JS 找它的身份证 -->
+        <!-- ↑ 联系方式区块 -->
+        <a href="mailto:xxx@example.com">📧 邮箱</a>
+        <!-- ↑ mailto: 表示点击后打开系统邮件客户端写邮件 -->
+        <a href="https://github.com/" target="_blank">🐙 GitHub</a>
+        <!-- ↑ target="_blank" 表示点开后在"新标签页"打开链接 -->
       </div>
 
-      <div class="block">
-        <!-- ↑ 第三个功能块：待办清单 -->
-        <h2>待办清单</h2>
-        <input id="todoInput" type="text" placeholder="输入要做的事">
-        <button id="btnAddTodo">添加</button>
-        <button id="btnCompleteAll">全部完成</button>
-        <button id="btnClearDone">清除已完成</button>
-        <button id="btnExport">导出为文字</button>
-        <div>
-          <!-- ↑ 筛选/排序按钮组 -->
-          <button id="btnFilterAll">全部</button>
-          <button id="btnFilterActive">未完成</button>
-          <button id="btnFilterDone">已完成</button>
-          <button id="btnSortActive">未完成优先</button>
+      <div class="grid">
+        <!-- ↑ .grid 是网格式布局容器，下面的每个 .block 就是"一格" -->
+
+        <div class="block">
+          <!-- ↑ 第一个功能块：打招呼/改名/换肤色 -->
+          <button id="btnHello">点我打招呼</button>
+          <button id="btnRename">改个名字</button>
+          <button id="btnSkin">换个肤色</button>
         </div>
-        <p id="exportResult"></p>
-        <!-- ↑ 导出结果会写进这个空段落 -->
-        <p id="todoCount">未完成：0 件</p>
-        <div class="progress">
-          <div id="todoBar"></div>
-          <!-- ↑ 进度条：里面这个 div 的宽度会随完成率变化 -->
+
+        <div class="block">
+          <!-- ↑ 第二个功能块：改名输入框 + 摸鱼语录 -->
+          <input id="nameInput" type="text" placeholder="输入你的新名字" />
+          <!-- ↑ 输入框：placeholder 是"提示文字"，未输入时灰色显示 -->
+          <button id="btnConfirmName">确认改名</button>
+          <p id="quoteText">点下面的按钮，抽一句摸鱼语录~</p>
+          <button id="btnQuote">随机摸鱼语录</button>
+          <button id="btnCopyQuote">📋 复制语录</button>
+          <!-- ↑ 新增：给"语录"再配一个"复制"按钮；id 是 JS 找它的身份证 -->
         </div>
-        <div class="ring-wrap">
-          <!-- ↑ 环的外框：负责居中 + 让数字叠在环心上 -->
-          <svg class="ring" viewBox="0 0 120 120">
-            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
-            <!-- ↑ 底环（灰色轨道） -->
-            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52"></circle>
-            <!-- ↑ 进度环（绿色弧） -->
-          </svg>
-          <span class="ring-label" id="ringLabel">0%</span>
-          <!-- ↑ 环中心的大数字，JS 会实时更新它 -->
+
+        <div class="block">
+          <!-- ↑ 第三个功能块：待办清单 -->
+          <h2>待办清单</h2>
+          <input id="todoInput" type="text" placeholder="输入要做的事" />
+          <button id="btnAddTodo">添加</button>
+          <button id="btnCompleteAll">全部完成</button>
+          <button id="btnClearDone">清除已完成</button>
+          <button id="btnExport">导出为文字</button>
+          <div>
+            <!-- ↑ 筛选/排序按钮组 -->
+            <button id="btnFilterAll">全部</button>
+            <button id="btnFilterActive">未完成</button>
+            <button id="btnFilterDone">已完成</button>
+            <button id="btnSortActive">未完成优先</button>
+          </div>
+          <p id="exportResult"></p>
+          <!-- ↑ 导出结果会写进这个空段落 -->
+          <p id="todoCount">未完成：0 件</p>
+          <div class="progress">
+            <div id="todoBar"></div>
+            <!-- ↑ 进度条：里面这个 div 的宽度会随完成率变化 -->
+          </div>
+          <div class="ring-wrap">
+            <!-- ↑ 环的外框：负责居中 + 让数字叠在环心上 -->
+            <svg class="ring" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+              <!-- ↑ 底环（灰色轨道） -->
+              <circle
+                class="ring-fg"
+                id="ringFg"
+                cx="60"
+                cy="60"
+                r="52"
+              ></circle>
+              <!-- ↑ 进度环（绿色弧） -->
+            </svg>
+            <span class="ring-label" id="ringLabel">0%</span>
+            <!-- ↑ 环中心的大数字，JS 会实时更新它 -->
+          </div>
+          <ul id="todoList"></ul>
+          <!-- ↑ 空的待办列表，JS 会往里动态塞 <li> -->
         </div>
-        <ul id="todoList"></ul>
-        <!-- ↑ 空的待办列表，JS 会往里动态塞 <li> -->
+
+        <div class="block">
+          <!-- ↑ 第四块：倒计时器 -->
+          <h2>倒计时器</h2>
+          <input id="timerInput" type="text" placeholder="输入秒数" />
+          <button id="btnStartTimer">开始</button>
+          <button id="btnResetTimer">重置</button>
+          <p id="timerDisplay">0 秒</p>
+        </div>
+
+        <div class="block">
+          <!-- ↑ 第五块：幸运抽签 -->
+          <h2>幸运抽签</h2>
+          <input id="namePool" type="text" placeholder="输入一个名字" />
+          <button id="btnAddName">加入名单</button>
+          <button id="btnDraw">开始抽签</button>
+          <p id="drawResult">点「开始抽签」试试手气~</p>
+          <ul id="poolList"></ul>
+          <!-- ↑ 空的名单列表，JS 会往里动态塞名字 -->
+        </div>
+
+        <div class="block">
+          <!-- ↑ 第六块：随机狗狗 -->
+          <h2>随机狗狗</h2>
+          <button id="btnDog">来一只狗狗</button>
+          <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
+          <img id="dogImg" class="dog-img hidden" alt="随机狗狗" />
+          <!-- ↑ 狗图：class 里有 hidden，默认隐藏，抓到后再显示 -->
+        </div>
+
+        <div class="block">
+          <!-- ↑ 第七块：GitHub 用户查询 -->
+          <h2>GitHub 用户查询</h2>
+          <input id="ghName" type="text" placeholder="输入 GitHub 用户名" />
+          <button id="btnSearchUser">查询</button>
+          <p id="ghResult">输入用户名，看看 TA 的资料~</p>
+          <img id="ghAvatar" class="gh-avatar hidden" alt="头像" />
+        </div>
+
+        <div class="block">
+          <!-- ↑ 第八块：猜数字游戏 -->
+          <h2>猜数字游戏</h2>
+          <p id="guessHint">我想了一个 1~100 之间的数字，来猜猜看！</p>
+          <input id="guessInput" type="text" placeholder="输入你的猜测" />
+          <button id="btnGuess">猜！</button>
+          <button id="btnRestart">重新开始</button>
+          <p id="guessResult"></p>
+          <p id="bestScore">最佳成绩：暂无</p>
+        </div>
       </div>
 
       <div class="block">
-        <!-- ↑ 第四块：倒计时器 -->
-        <h2>倒计时器</h2>
-        <input id="timerInput" type="text" placeholder="输入秒数">
-        <button id="btnStartTimer">开始</button>
-        <button id="btnResetTimer">重置</button>
-        <p id="timerDisplay">0 秒</p>
+        <!-- ↑ 涂鸦板区块（放 grid 外，整行更宽更好画） -->
+        <h2>涂鸦板</h2>
+        <p class="intro">
+          按住鼠标（或手指）在画布上拖动画画，画完可以导出成 PNG 存下来~
+        </p>
+        <canvas id="boardCanvas" width="720" height="360"></canvas>
+        <!-- ↑ <canvas> 是画布：width/height 是"内部像素"尺寸；id 给 JS 找它 -->
+        <div class="board-tools">
+          <!-- ↑ 画笔工具栏：颜色、粗细、清空、导出 -->
+          <label
+            >🎨 颜色 <input id="boardColor" type="color" value="#2563eb"
+          /></label>
+          <!-- ↑ type="color" 是浏览器自带的取色器，value 是默认颜色 -->
+          <label
+            >🖊 粗细
+            <input id="boardWidth" type="range" min="1" max="20" value="4"
+          /></label>
+          <!-- ↑ type="range" 是滑块，1~20 像素，默认 4 -->
+          <button id="btnBoardClear">🗑 清空</button>
+          <button id="btnBoardExport">📥 导出 PNG</button>
+        </div>
       </div>
 
       <div class="block">
-        <!-- ↑ 第五块：幸运抽签 -->
-        <h2>幸运抽签</h2>
-        <input id="namePool" type="text" placeholder="输入一个名字">
-        <button id="btnAddName">加入名单</button>
-        <button id="btnDraw">开始抽签</button>
-        <p id="drawResult">点「开始抽签」试试手气~</p>
-        <ul id="poolList"></ul>
-        <!-- ↑ 空的名单列表，JS 会往里动态塞名字 -->
+        <h2>语言朗诵</h2>
+        <p class="intro">按下按钮，可以进行朗诵~</p>
+        <p id="ttsStatus"></p>
+        <div class="speak-tools">
+          <label>文本内容<input id="ttsText" type="text" /></label>
+          <label
+            >语速滑块<input
+              id="ttsRate"
+              type="range"
+              min="0.5"
+              max="2"
+              step="0.1"
+              value="1"
+          /></label>
+          <label
+            >音调滑块<input
+              id="ttsPitch"
+              type="range"
+              min="0"
+              max="2"
+              step="0.1"
+              value="1"
+          /></label>
+          <select id="ttsVoice">
+            <option value="">默认语音</option>
+          </select>
+          <button id="btnSpeak">🔊 朗读</button>
+          <button id="btnStop">⏹ 停止</button>
+        </div>
       </div>
 
       <div class="block">
-        <!-- ↑ 第六块：随机狗狗 -->
-        <h2>随机狗狗</h2>
-        <button id="btnDog">来一只狗狗</button>
-        <p id="dogStatus">点按钮，从互联网抓一只狗~</p>
-        <img id="dogImg" class="dog-img hidden" alt="随机狗狗">
-        <!-- ↑ 狗图：class 里有 hidden，默认隐藏，抓到后再显示 -->
+        <!-- ↑ 接小鱼游戏区块 -->
+        <h2>接住小鱼</h2>
+        <p class="intro">
+          移动鼠标控制鲸鱼，接住掉落的小鱼；漏掉 3 条就结束啦~
+        </p>
+        <canvas id="fishCanvas" width="720" height="360"></canvas>
+        <!-- ↑ 游戏画布，内部像素 720×360 -->
+        <p id="fishStatus">🐟 移动鼠标接小鱼，漏 3 条就结束！</p>
+        <!-- ↑ 游戏状态提示文字 -->
+        <p class="fish-score">
+          得分 <span id="fishScore">0</span> · 生命
+          <span id="fishLives">3</span>
+        </p>
+        <!-- ↑ 得分和剩余生命，JS 会实时改这两个数字 -->
+        <button id="btnFishRestart">🔄 重新开始</button>
       </div>
 
       <div class="block">
-        <!-- ↑ 第七块：GitHub 用户查询 -->
-        <h2>GitHub 用户查询</h2>
-        <input id="ghName" type="text" placeholder="输入 GitHub 用户名">
-        <button id="btnSearchUser">查询</button>
-        <p id="ghResult">输入用户名，看看 TA 的资料~</p>
-        <img id="ghAvatar" class="gh-avatar hidden" alt="头像">
+        <!-- ↑ 技能可视化区块 -->
+        <h2>我的技能树</h2>
+        <p class="intro">
+          边学边记，用一张图看看前端技能成长~（数据为示例，以后可换成真实统计）
+        </p>
+        <div class="skill-box">
+          <!-- ↑ 图表外框：定宽高，Chart.js 把图画在里面的 canvas 上 -->
+          <canvas id="skillChart"></canvas>
+          <!-- ↑ 这个 canvas 不需要 width/height 属性，Chart.js 会自己管理尺寸 -->
+        </div>
       </div>
 
       <div class="block">
-        <!-- ↑ 第八块：猜数字游戏 -->
-        <h2>猜数字游戏</h2>
-        <p id="guessHint">我想了一个 1~100 之间的数字，来猜猜看！</p>
-        <input id="guessInput" type="text" placeholder="输入你的猜测">
-        <button id="btnGuess">猜！</button>
-        <button id="btnRestart">重新开始</button>
-        <p id="guessResult"></p>
-        <p id="bestScore">最佳成绩：暂无</p>
-      </div>
-    </div>
-
-    <div class="block">
-      <!-- ↑ 涂鸦板区块（放 grid 外，整行更宽更好画） -->
-      <h2>涂鸦板</h2>
-      <p class="intro">按住鼠标（或手指）在画布上拖动画画，画完可以导出成 PNG 存下来~</p>
-      <canvas id="boardCanvas" width="720" height="360"></canvas>
-      <!-- ↑ <canvas> 是画布：width/height 是"内部像素"尺寸；id 给 JS 找它 -->
-      <div class="board-tools">
-        <!-- ↑ 画笔工具栏：颜色、粗细、清空、导出 -->
-        <label>🎨 颜色 <input id="boardColor" type="color" value="#2563eb"></label>
-        <!-- ↑ type="color" 是浏览器自带的取色器，value 是默认颜色 -->
-        <label>🖊 粗细 <input id="boardWidth" type="range" min="1" max="20" value="4"></label>
-        <!-- ↑ type="range" 是滑块，1~20 像素，默认 4 -->
-        <button id="btnBoardClear">🗑 清空</button>
-        <button id="btnBoardExport">📥 导出 PNG</button>
-      </div>
-    </div>
-
-    <div class="block">
-      <h2>语言朗诵</h2>
-      <p class="intro">按下按钮，可以进行朗诵~</p>
-      <p id="ttsStatus"></p>
-      <div class="speak-tools">
-        <label>文本内容<input id="ttsText" type="text"></label>
-        <label>语速滑块<input id="ttsRate" type="range" min="0.5" max="2" step="0.1" value="1"></label>
-        <label>音调滑块<input id="ttsPitch" type="range" min="0" max="2" step="0.1" value="1"></label>
-        <select id="ttsVoice">
-          <option value="">默认语音</option>
+        <h2>迷你电子琴</h2>
+        <p class="intro">可以弹奏的线上电子琴</p>
+        <div id="piano">
+          <button class="piano-key" data-freq="261.63">Do</button>
+          <button class="piano-key" data-freq="293.66">Re</button>
+          <button class="piano-key" data-freq="329.63">Mi</button>
+          <button class="piano-key" data-freq="349.23">Fa</button>
+          <button class="piano-key" data-freq="392.00">Sol</button>
+          <button class="piano-key" data-freq="440.00">La</button>
+          <button class="piano-key" data-freq="493.88">Si</button>
+          <button class="piano-key" data-freq="523.25">Do'</button>
+        </div>
+        <select id="waveSelect">
+          <option value="sine">正弦（柔）</option>
+          <option value="square">方波（复古）</option>
+          <option value="triangle">三角（空灵）</option>
+          <option value="sawtooth">锯齿（电音）</option>
         </select>
-        <button id="btnSpeak">🔊 朗读</button>
-        <button id="btnStop">⏹ 停止</button>
+        <input
+          type="range"
+          id="volSlider"
+          min="0"
+          max="1"
+          step="0.05"
+          value="0.5"
+        />
+      </div>
+
+      <div class="block">
+        <h2>数据备份</h2>
+        <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
+        <button id="btnExportData">📥 导出数据</button>
+        <button id="btnImportData">📤 导入数据</button>
+        <input id="fileInput" type="file" accept=".json" class="hidden" />
       </div>
     </div>
 
-    <div class="block">
-      <!-- ↑ 接小鱼游戏区块 -->
-      <h2>接住小鱼</h2>
-      <p class="intro">移动鼠标控制鲸鱼，接住掉落的小鱼；漏掉 3 条就结束啦~</p>
-      <canvas id="fishCanvas" width="720" height="360"></canvas>
-      <!-- ↑ 游戏画布，内部像素 720×360 -->
-      <p id="fishStatus">🐟 移动鼠标接小鱼，漏 3 条就结束！</p>
-      <!-- ↑ 游戏状态提示文字 -->
-      <p class="fish-score">得分 <span id="fishScore">0</span> · 生命 <span id="fishLives">3</span></p>
-      <!-- ↑ 得分和剩余生命，JS 会实时改这两个数字 -->
-      <button id="btnFishRestart">🔄 重新开始</button>
-    </div>
-
-    <div class="block">
-      <!-- ↑ 技能可视化区块 -->
-      <h2>我的技能树</h2>
-      <p class="intro">边学边记，用一张图看看前端技能成长~（数据为示例，以后可换成真实统计）</p>
-      <div class="skill-box">
-        <!-- ↑ 图表外框：定宽高，Chart.js 把图画在里面的 canvas 上 -->
-        <canvas id="skillChart"></canvas>
-        <!-- ↑ 这个 canvas 不需要 width/height 属性，Chart.js 会自己管理尺寸 -->
-      </div>
-    </div>
-
-    <div class="block">
-      <h2>迷你电子琴</h2>
-      <p class="intro">可以弹奏的线上电子琴</p>
-      <div id="piano">
-        <button class="piano-key" data-freq="261.63">Do</button>
-        <button class="piano-key" data-freq="293.66">Re</button>
-        <button class="piano-key" data-freq="329.63">Mi</button>
-        <button class="piano-key" data-freq="349.23">Fa</button>
-        <button class="piano-key" data-freq="392.00">Sol</button>
-        <button class="piano-key" data-freq="440.00">La</button>
-        <button class="piano-key" data-freq="493.88">Si</button>
-        <button class="piano-key" data-freq="523.25">Do'</button>
-      </div>
-      <select id="waveSelect">
-        <option value="sine">正弦（柔）</option>
-        <option value="square">方波（复古）</option>
-        <option value="triangle">三角（空灵）</option>
-        <option value="sawtooth">锯齿（电音）</option>
-      </select>
-      <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.5">
-    </div>
-
-    <div class="block">
-      <h2>数据备份</h2>
-      <p class="intro">把主页数据导出成 JSON 文件保存，或从文件恢复~</p>
-      <button id="btnExportData">📥 导出数据</button>
-      <button id="btnImportData">📤 导入数据</button>
-      <input id="fileInput" type="file" accept=".json" class="hidden">
-    </div>
-  </div>
-
-  <!-- 快捷键帮助面板：默认隐藏，按 ? 弹出、Esc 或点按钮关闭 -->
+    <!-- 快捷键帮助面板：默认隐藏，按 ? 弹出、Esc 或点按钮关闭 -->
     <div id="shortcutHelp" class="help-overlay hidden">
       <div class="help-panel">
         <h2>⌨️ 键盘快捷键</h2>
@@ -277,6 +322,5 @@
 
     <script type="module" src="/src/main.ts"></script>
     <!-- ↑ 引入 JS 入口文件；type="module" 才能用 import 导入其它模块 -->
-</body>
-
+  </body>
 </html>

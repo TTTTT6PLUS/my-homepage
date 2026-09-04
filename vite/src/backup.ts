@@ -3,7 +3,14 @@
 import { $, on, loadJSON, saveJSON, notify } from "./utils";
 // ↑ 引入工具：$（找元素）、on（绑事件）、loadJSON（读）、saveJSON（写）、notify（弹通知）
 
-const KEYS: string[] = ["tasks", "pool", "myName", "green", "bestScore", "myTheme"];
+const KEYS: string[] = [
+  "tasks",
+  "pool",
+  "myName",
+  "green",
+  "bestScore",
+  "myTheme",
+];
 // ↑ 要备份的数据 key 清单（待办、名单、名字、肤色、最佳成绩、主题）
 
 function exportData(): void {
