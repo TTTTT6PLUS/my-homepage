@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/bump-sw.js && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "typescript": "^7.0.2",
     "vite": "^8.2.2"
   },
   "dependencies": {

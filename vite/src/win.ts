@@ -5,8 +5,11 @@ import { $, throttle } from "./utils.js";
 
 function updateWidth() {
   // ↑ 定义一个"更新宽度文字"的函数
-  $("winWidth").innerText = `窗口宽度：${window.innerWidth}px`;
-  // ↑ 把 id=winWidth 的元素文字改成当前窗口宽度（window.innerWidth 即窗口像素宽）
+  const el = $("winWidth") as HTMLElement;
+  // ↑ $ 返回"元素或 null"，TS 严格模式下不允许直接对可能 null 的值操作
+  //   用 as HTMLElement 断言：我确定这个元素一定存在（HTML 里写死了 id）
+  el.innerText = `窗口宽度：${window.innerWidth}px`;
+  // ↑ 把元素文字改成当前窗口宽度（window.innerWidth 即窗口像素宽）
 }
 
 export function initWin() {

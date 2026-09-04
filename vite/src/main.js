@@ -18,7 +18,7 @@ import { initGuess } from "./guess.js";
 // ↑ 引入"猜数字"模块
 import { initTheme } from "./theme.js";
 // ↑ 引入"深色模式"模块
-import { initWin } from "./win.js";
+import { initWin } from "./win";
 // ↑ 引入"窗口宽度显示"模块
 import { initReveal } from "./reveal.js";
 // ↑ 引入滚动显现模块
@@ -26,8 +26,9 @@ import { initBackup } from "./backup.js";
 // ↑ 引入数据打包模块
 import { initPwa } from "./pwa.js";
 // ↑ 引入 PWA（离线应用）模块
-import { initBoard } from "./board.js";
-// ↑ 引入"涂鸦板"模块
+import { initBoard } from "./board";
+// ↑ 引入"涂鸦板"模块。注意：改成了省略扩展名的写法（原 "./board.js"），
+//   因为文件已迁移为 board.ts，让解析器自动去找 .ts 版本
 import { initTTS } from "./tts.js";
 // ↑ 引入"语音朗读"模块
 import { initGame } from "./fish.js";

@@ -1,0 +1,39 @@
+{
+  // tsconfig.json：TypeScript 的"总配置文件"，告诉编译器怎么干活
+  // 这份配置按"Vite 项目 + 从 JS 渐进迁移"的官方推荐来写
+
+  "compilerOptions": {
+    "target": "ES2022",
+    // ↑ 编译目标：输出用 ES2022 语法（现代浏览器全支持）
+
+    "module": "ESNext",
+    // ↑ 模块规范：ES Module（配合 Vite 用）
+
+    "moduleResolution": "bundler",
+    // ↑ 模块解析：按打包器(Vite)的方式找文件，支持省略扩展名
+
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // ↑ 环境库：需要 DOM 类型（document/window 等），否则这些 API 全报"找不到"
+
+    "allowJs": true,
+    // ↑ 允许 import .js 文件（渐进迁移关键：.ts 能引用还没迁移的 .js）
+
+    "checkJs": false,
+    // ↑ 但不检查 .js 内部（老文件先放行，改成 .ts 才严格）
+
+    "noEmit": true,
+    // ↑ 只做类型检查、不产出 JS 文件（转译交给 Vite/esbuild，我们不重复编译）
+
+    "strict": true,
+    // ↑ 严格模式！全开类型检查（TS 的威力所在，但初次会报不少错，正常）
+
+    "skipLibCheck": true,
+    // ↑ 跳过 node_modules 里第三方类型文件的检查（提速）
+
+    "isolatedModules": true,
+    // ↑ 每个文件可独立转译（Vite 的要求）
+  },
+
+  "include": ["src"]
+  // ↑ 只检查 src 目录下的文件
+}
