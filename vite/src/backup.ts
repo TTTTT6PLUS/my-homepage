@@ -1,13 +1,13 @@
 // 数据备份：把 localStorage 的数据导出成 JSON 文件，也能从文件恢复回去
 
-import { $, on, loadJSON, saveJSON, notify } from "./utils.js";
+import { $, on, loadJSON, saveJSON, notify } from "./utils";
 // ↑ 引入工具：$（找元素）、on（绑事件）、loadJSON（读）、saveJSON（写）、notify（弹通知）
 
-const KEYS = ["tasks", "pool", "myName", "green", "bestScore", "myTheme"];
+const KEYS: string[] = ["tasks", "pool", "myName", "green", "bestScore", "myTheme"];
 // ↑ 要备份的数据 key 清单（待办、名单、名字、肤色、最佳成绩、主题）
 
-function exportData() {
-  const data = {};
+function exportData(): void {
+  const data: Record<string, unknown> = {};
   // ↑ 准备一个空对象，用来装所有要备份的数据
 
   KEYS.forEach((key) => {
@@ -38,12 +38,12 @@ function exportData() {
   notify("导出成功", "数据已打包成 JSON 文件下载~");
 }
 
-function importData() {
-  $("fileInput").click();
+function importData(): void {
+  $<HTMLInputElement>("fileInput").click();
   // ↑ 点"导入数据"按钮时，其实是偷偷去点那个隐藏的文件输入框，弹出选择文件窗口
 }
 
-function restoreData(file) {
+function restoreData(file: File): void {
   // ↑ 真正干活的：把选中的文件读出来、解析、写回 localStorage
   const reader = new FileReader();
   // ↑ 造一个"文件读取器"，专门用来读本地文件内容
@@ -51,7 +51,7 @@ function restoreData(file) {
   reader.onload = () => {
     // ↑ 文件读完以后，会执行这个回调（reader.result 里就是文件文本）
     try {
-      const data = JSON.parse(reader.result);
+      const data = JSON.parse(reader.result as string);
       // ↑ 把文件里的 JSON 文本还原成对象；写不对会抛错，被下面 catch 接住
 
       KEYS.forEach((key) => {
@@ -75,18 +75,20 @@ function restoreData(file) {
   // ↑ 以"文本"方式读这个文件，读完后自动触发上面的 onload
 }
 
-export function initBackup() {
+export function initBackup(): void {
   on("btnExportData", "click", exportData);
   // ↑ 点"导出数据"按钮 → 下载 JSON 文件
   on("btnImportData", "click", importData);
   // ↑ 点"导入数据"按钮 → 打开文件选择框
-  on("fileInput", "change", (e) => {
+  on("fileInput", "change", (e: Event) => {
     // ↑ 文件输入框"选中了文件"时触发
-    const file = e.target.files[0];
+    const input = e.target as HTMLInputElement;
+    // ↑ e.target 就是这个隐藏的 file input
+    const file = input.files![0];
     // ↑ 拿到用户选中的第一个文件（files 是数组，选一个就是files[0]）
     if (file) restoreData(file);
     // ↑ 确实选了文件才去恢复
-    e.target.value = "";
+    input.value = "";
     // ↑ 清空输入框的值，下次还能再选同一个文件（否则选相同文件不触发 change）
   });
 }

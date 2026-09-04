@@ -1,6 +1,6 @@
 // 窗口宽度显示：实时把浏览器窗口的宽度显示在页面上，并用节流优化性能
 
-import { $, throttle } from "./utils.js";
+import { $, throttle } from "./utils";
 // ↑ 引入 $（找元素）和 throttle（节流）两个工具
 
 function updateWidth() {

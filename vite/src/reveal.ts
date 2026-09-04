@@ -1,6 +1,6 @@
 // 滚动显现：用 IntersectionObserver 盯着每个功能块，滚进视口才淡入上移
 
-export function initReveal() {
+export function initReveal(): void {
   const blocks = document.querySelectorAll(".block");
   // ↑ 用 querySelectorAll 选出所有 .block 功能块（注意：这不是 $，
   //   $ 只能按 id 选一个，这里要选"一批"，所以用 querySelectorAll）

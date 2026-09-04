@@ -1,6 +1,6 @@
 // 猜数字游戏：随机一个 1~100 的数，反复猜直到猜对，并记录最佳成绩
 
-import { $, on, loadJSON, saveJSON } from "./utils.js";
+import { $, on, loadJSON, saveJSON } from "./utils";
 
 const KEY = "bestScore";
 
@@ -9,11 +9,11 @@ let secret = Math.floor(Math.random() * 100) + 1;
 //   向下取整后 +1，范围就是 1~100
 let guessCount = 0;
 // ↑ 记录本轮已经猜了几次
-let bestScore = loadJSON(KEY, 0);
+let bestScore: number = loadJSON(KEY, 0);
 
-function guessNumber() {
+function guessNumber(): void {
   // ↑ 点"猜！"时执行
-  const guess = Number($("guessInput").value);
+  const guess = Number($<HTMLInputElement>("guessInput").value);
   // ↑ 把输入转成数字
   if (isNaN(guess) || guess < 1 || guess > 100) {
     // ↑ 校验：不是数字、或超出 1~100 范围
@@ -36,21 +36,21 @@ function guessNumber() {
     }
     $("bestScore").innerText = "最佳成绩：" + bestScore + " 次";
   }
-  $("guessInput").value = "";
+  $<HTMLInputElement>("guessInput").value = "";
   // ↑ 猜完清空输入框
 }
 
-function restartGame() {
+function restartGame(): void {
   // ↑ 点"重新开始"时执行
   secret = Math.floor(Math.random() * 100) + 1;
   // ↑ 重新生成一个新秘密数字
   guessCount = 0;
   // ↑ 次数归零
   $("guessResult").innerText = "";
-  $("guessInput").value = "";
+  $<HTMLInputElement>("guessInput").value = "";
 }
 
-export function initGuess() {
+export function initGuess(): void {
   on("btnGuess", "click", guessNumber);
   // ↑ 绑定猜数字
   on("btnRestart", "click", restartGame);

@@ -2,9 +2,9 @@
 // 迁移 = 逻辑一行不动，只给 TS 补上"类型信息"，让错误在写代码时就被抓住
 // 注意：Vite 直接支持 .ts 文件，运行时行为和原来一模一样
 
-import { $, on, notify } from "./utils.js";
-// ↑ $（找元素）、on（绑事件）、notify（弹通知）。utils.js 还是 .js，
-//   tsconfig 的 allowJs 允许 .ts 继续引用它
+import { $, on, notify } from "./utils";
+// ↑ $（找元素）、on（绑事件）、notify（弹通知）。utils 已迁移成 .ts，
+//   统一省略扩展名，让解析器自动去找 .ts 版本
 
 const canvas = $("boardCanvas") as HTMLCanvasElement;
 // ↑ 类型断言 as：$ 返回的是"可能为空的通用元素"，

@@ -1,23 +1,25 @@
-import { $, on, makeButton, notify, loadJSON, saveJSON, onEnter } from "./utils.js";
+import { $, on, makeButton, notify, loadJSON, saveJSON, onEnter } from "./utils";
 // ↑ 在原有基础上，多借一个 notify 进来
 
 const KEY = "tasks";
 
-let tasks = loadJSON(KEY, []);
-let filterMode = "all";
+type Task = { text: string; done: boolean };
+
+let tasks: Task[] = loadJSON(KEY, []);
+let filterMode: "all" | "active" | "done" = "all";
 // ↑ 记录"当前筛选模式"：all 全部 / active 未完成 / done 已完成
 let showActiveFirst = false;
 // ↑ 记录"是否开启未完成优先排序"
 
-let draggedIndex = null;
+let draggedIndex: number | null = null;
 // ↑ 记录"正在拖动的那条任务"的真实下标；没在拖时是 null。
 //   （用模块级变量，因为拖拽的每一步事件都要共享"谁在被拖"这份信息）
 
-function saveTasks() {
+function saveTasks(): void {
   saveJSON(KEY, tasks);
 }
 
-function getVisibleTasks() {
+function getVisibleTasks(): Task[] {
   // ↑ 计算出"当前应该显示的"任务列表（筛选 + 排序后）
   let list = tasks.filter((t) => {
     // ↑ filter 会遍历每个任务 t，返回一个新的数组
@@ -35,15 +37,15 @@ function getVisibleTasks() {
   // ↑ 返回处理好的列表
 }
 
-function addTodo() {
+function addTodo(): void {
   // ↑ 添加一条待办
-  const task = $("todoInput").value.trim();
+  const task = $<HTMLInputElement>("todoInput").value.trim();
   // ↑ 拿到输入框内容并去首尾空格
   if (!task) return;
   // ↑ 空内容直接忽略
   tasks.push({ text: task, done: false });
   // ↑ 往数组尾部加一个任务对象 { 文字, 是否完成 }
-  $("todoInput").value = "";
+  $<HTMLInputElement>("todoInput").value = "";
   // ↑ 清空输入框
   saveTasks();
   // ↑ 存盘
@@ -51,7 +53,7 @@ function addTodo() {
   // ↑ 重新渲染列表
 }
 
-function deleteTodo(i) {
+function deleteTodo(i: number): void {
   // ↑ 删除下标为 i 的任务
   tasks.splice(i, 1);
   // ↑ splice(i, 1) 表示从位置 i 删除 1 个元素
@@ -59,7 +61,7 @@ function deleteTodo(i) {
   renderTodo();
 }
 
-function toggleDone(i) {
+function toggleDone(i: number): void {
   // ↑ 切换第 i 条任务的完成状态
   tasks[i].done = !tasks[i].done;
   // ↑ 取反：完成↔未完成
@@ -67,7 +69,7 @@ function toggleDone(i) {
   renderTodo();
 }
 
-function editTodo(i) {
+function editTodo(i: number): void {
   // ↑ 编辑第 i 条任务
   const newText = prompt("修改这条待办：", tasks[i].text);
   // ↑ prompt 弹出一个带输入框的对话框，返回用户输入的文字（取消则返回 null）
@@ -80,7 +82,7 @@ function editTodo(i) {
   }
 }
 
-function renderTodo() {
+function renderTodo(): void {
   // ↑ 把 tasks 画到页面上（核心渲染函数）
   const list = $("todoList");
   list.innerHTML = "";
@@ -94,7 +96,7 @@ function renderTodo() {
     // ↑ 为每条任务新建一个 <li>
     li.draggable = true;
     // ↑ 设置这一项可以被拖起来（HTML5 拖拽开关）
-    li.dataset.index = i;
+    li.dataset.index = String(i);
     // ↑ 把"真实下标"记录在 li 的自定义属性 data-index 上，供点击时取回
     li.textContent = item.text;
     // ↑ 显示任务文字
@@ -114,15 +116,15 @@ function renderTodo() {
   // ↑ 刷新计数和进度条
 }
 
-function handleTodoClick(e) {
+function handleTodoClick(e: Event): void {
   // ↑ 事件委托：整个列表只绑一个点击监听，命中哪个小按钮就做对应操作
-  const btn = e.target.closest("button");
+  const btn = (e.target as HTMLElement).closest("button");
   // ↑ e.target 是真正被点的元素；closest 向上找最近的 button
   if (!btn) return;
   // ↑ 点的不是按钮（是 li 文字），直接忽略
 
-  const li = btn.closest("li");
-  // ↑ 找到这个按钮所属的 li
+  const li = btn.closest("li")!;
+  // ↑ 找到这个按钮所属的 li（按钮一定长在 li 里，用 ! 告知 TS 不会为空）
   const i = Number(li.dataset.index);
   // ↑ 取回之前记录的真实下标（记得转成数字）
 
@@ -134,32 +136,32 @@ function handleTodoClick(e) {
   // ↑ 如果带 btn-edit 类 → 编辑
 }
 
-function handleTodoDblclick(e) {
+function handleTodoDblclick(e: Event): void {
   // ↑ 双击一条待办，也切换完成状态
-  const li = e.target.closest("li");
+  const li = (e.target as HTMLElement).closest("li");
   if (!li) return;
   toggleDone(Number(li.dataset.index));
 }
 
-function handleDragStart(e) {
+function handleDragStart(e: DragEvent): void {
   // ↑ 开始拖拽时触发：记下"拖的是哪一条"，给它加个半透明效果
-  const li = e.target.closest("li");
+  const li = (e.target as HTMLElement).closest("li");
   // ↑ 被拖的元素可能是 li 也可能是里面的小按钮，closest 统一找到所属的 li
   if (!li) return;
   draggedIndex = Number(li.dataset.index);
   // ↑ 读回真实下标，存进模块变量，后面 drop 时要用
   li.classList.add("dragging");
   // ↑ 加 .dragging 类 → CSS 把它变半透明，用户一眼看出拖的是谁
-  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer!.effectAllowed = "move";
   // ↑ 告诉系统这次操作是"移动"，鼠标会显示移动图标
 }
 
-function handleDragOver(e) {
+function handleDragOver(e: DragEvent): void {
   // ↑ 拖到别的条目上方时反复触发（高频事件）
   e.preventDefault();
   // ↑ 关键一步！浏览器默认"禁止把东西放下"，必须阻止这个默认行为，
   //   drop 事件才有机会触发
-  const li = e.target.closest("li");
+  const li = (e.target as HTMLElement).closest("li");
   if (!li) return;
   document.querySelectorAll("#todoList li").forEach((el) => el.classList.remove("drag-over"));
   // ↑ 先把所有条目的"即将放入"标记清掉，保证同一时刻只有一个高亮
@@ -170,10 +172,10 @@ function handleDragOver(e) {
   }
 }
 
-function handleDrop(e) {
+function handleDrop(e: DragEvent): void {
   // ↑ 松手放下的瞬间触发：真正把任务从原位置挪到目标位置
   e.preventDefault();
-  const li = e.target.closest("li");
+  const li = (e.target as HTMLElement).closest("li");
   if (!li || draggedIndex === null) return;
   // ↑ 找不到目标、或压根没在拖，就啥也不做
 
@@ -195,7 +197,7 @@ function handleDrop(e) {
   // ↑ 按新顺序重新渲染
 }
 
-function handleDragEnd(e) {
+function handleDragEnd(e: DragEvent): void {
   // ↑ 拖拽结束（无论有没有成功放下）都会触发，专门用来收尾清理
   document.querySelectorAll(".dragging, .drag-over").forEach((el) =>
     el.classList.remove("dragging", "drag-over")
@@ -205,7 +207,7 @@ function handleDragEnd(e) {
   // ↑ 重置"谁在被拖"的记录
 }
 
-function updateCount() {
+function updateCount(): void {
   // ↑ 更新"未完成几件"
   const active = tasks.filter((t) => !t.done).length;
   // ↑ 数一下还有多少未完成
@@ -217,18 +219,18 @@ function updateCount() {
 const RING_C = 2 * Math.PI * 52;
 // ↑ （新增）环形图圆周长 = 2π×半径；这里的 52 要和 SVG 里 r="52" 严格一致！
 
-function updateRing(percent) {
+function updateRing(percent: number): void {
   // ↑ （新增）根据完成率刷新环形图
   const offset = RING_C * (1 - percent / 100);
   // ↑ 算要"藏掉"多少弧长：完成率 0% → 藏掉整个周长（全空）；
   //   100% → 藏 0（满圈）；中间值按比例。percent/100 是把它变成 0~1 的小数
-  $("ringFg").style.strokeDashoffset = offset;
-  // ↑ 把算好的值写进前景圆的 stroke-dashoffset 属性
+  $("ringFg").style.strokeDashoffset = String(offset);
+  // ↑ 把算好的值写进前景圆的 stroke-dashoffset 属性（TS：该属性是字符串，需 String() 转换）
   $("ringLabel").innerText = percent + "%";
   // ↑ （新增）把环中心的大数字也更新成当前百分比
 }
 
-function updateProgress() {
+function updateProgress(): void {
   // ↑ 更新完成率和进度条
   const done = tasks.reduce((acc, t) => acc + (t.done ? 1 : 0), 0);
   // ↑ reduce 累加"已完成"的数量
@@ -240,7 +242,7 @@ function updateProgress() {
   // ↑ （新增）把环形图也刷成同样的完成率
 }
 
-function clearDone() {
+function clearDone(): void {
   // ↑ 清除所有已完成的任务
   tasks = tasks.filter((t) => !t.done);
   // ↑ 只保留"未完成"的
@@ -248,7 +250,7 @@ function clearDone() {
   renderTodo();
 }
 
-function completeAll() {
+function completeAll(): void {
   // ↑ 全部标记为完成
   tasks.forEach((t) => (t.done = true));
   // ↑ 每个任务的 done 都设为 true
@@ -256,7 +258,7 @@ function completeAll() {
   renderTodo();
 }
 
-function exportTasks() {
+function exportTasks(): void {
   // ↑ 把任务导出成一行文字，并一键复制 + 弹通知
   if (tasks.length === 0) {
     // ↑ 没有任务时，只提示一句就结束
@@ -280,19 +282,19 @@ function exportTasks() {
   });
 }
 
-function setFilter(mode) {
+function setFilter(mode: "all" | "active" | "done"): void {
   // ↑ 切换筛选模式
   filterMode = mode;
   renderTodo();
 }
 
-function toggleSort() {
+function toggleSort(): void {
   // ↑ 切换"未完成优先"排序
   showActiveFirst = !showActiveFirst;
   renderTodo();
 }
 
-export function initTodo() {
+export function initTodo(): void {
   // ↑ 启动函数：main.js 会调用它
 
   on("btnAddTodo", "click", addTodo);

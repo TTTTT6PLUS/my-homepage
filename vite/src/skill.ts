@@ -4,11 +4,11 @@
 import Chart from "chart.js/auto";
 // ↑ 从 chart.js 导入 Chart 主类；"/auto" 会自动注册柱状图、折线图等所有常用组件，
 //   不用手动一个个注册（这是 Chart.js v4 的推荐写法）
-import { $ } from "./utils.js";
+import { $ } from "./utils";
 // ↑ 引入 $（找元素）
 
 // 技能数据：以后想换真实统计（比如每天学习时长），只需改这个数组
-const SKILLS = [
+const SKILLS: { name: string; score: number; color: string }[] = [
   { name: "HTML", score: 90, color: "#ef4444" },
   { name: "CSS", score: 85, color: "#3b82f6" },
   { name: "JavaScript", score: 80, color: "#f59e0b" },
@@ -20,7 +20,7 @@ const SKILLS = [
 ];
 // ↑ 每项 = 技能名 + 熟练度打分(0~100) + 柱子颜色
 
-function themeColor(varName, fallback) {
+function themeColor(varName: string, fallback: string): string {
   // ↑ 读 CSS 变量当前值（用来给图表文字上色，深浅色主题都协调）
   const val = getComputedStyle(document.body)
     .getPropertyValue(varName)
@@ -30,9 +30,27 @@ function themeColor(varName, fallback) {
   // ↑ 没读到就用兜底色
 }
 
-export function initSkillChart() {
+// y 轴的配置抽成独立变量：Chart.js v4 的类型把 stepSize 归在 ticks 里，
+// 而原 JS 一直写在 scales.y 的根级；为让传给图表运行时的配置对象与原代码一字不差，
+// 这里用变量承载（TS 对"非字面量"不会报多出字段的错）。
+const yScaleOptions = {
+  min: 0,
+  max: 100,
+  // ↑ 分数范围写死 0~100
+  stepSize: 20,
+  // ↑ 每 20 分画一条网格线（0/20/40/60/80/100）
+  ticks: {
+    color: themeColor("--text", "#475569"),
+    // ↑ 刻度文字用主题文字色，深浅色模式都看得清
+    callback: (v: number | string) => v + "",
+  },
+  grid: { color: "rgba(148, 163, 184, 0.18)" },
+  // ↑ 网格线用很淡的灰，不抢柱子风头
+};
+
+export function initSkillChart(): void {
   // ↑ 启动函数：main.js 调用
-  new Chart($("skillChart"), {
+  new Chart($<HTMLCanvasElement>("skillChart"), {
     // ↑ 在指定 canvas 上创建一张图（第二个参数是"配置对象"）
     type: "bar",
     // ↑ 图表类型：柱状图
@@ -74,20 +92,7 @@ export function initSkillChart() {
       },
       scales: {
         // ↑ 坐标轴配置
-        y: {
-          min: 0,
-          max: 100,
-          // ↑ 分数范围写死 0~100
-          stepSize: 20,
-          // ↑ 每 20 分画一条网格线（0/20/40/60/80/100）
-          ticks: {
-            color: themeColor("--text", "#475569"),
-            // ↑ 刻度文字用主题文字色，深浅色模式都看得清
-            callback: (v) => v + "",
-          },
-          grid: { color: "rgba(148, 163, 184, 0.18)" },
-          // ↑ 网格线用很淡的灰，不抢柱子风头
-        },
+        y: yScaleOptions,
         x: {
           ticks: { color: themeColor("--text", "#475569") },
           // ↑ x 轴技能名也跟随主题色

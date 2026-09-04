@@ -2,40 +2,40 @@
 
 import "./style.css";
 // ↑ 引入全局样式（Vite 会自动处理，最终打包进页面）
-import { on, lazyInit } from "./utils.js";
+import { on, lazyInit } from "./utils";
 // ↑ 引入 on（绑事件）和 lazyInit（懒加载）两个工具
-import { initShortcut } from "./shortcut.js";
+import { initShortcut } from "./shortcut";
 // ↑ 引入键盘快捷键模块
-import { initGreet } from "./greet.js";
+import { initGreet } from "./greet";
 // ↑ 引入"打招呼/改名/换肤色"模块的启动函数
-import { initQuote } from "./quote.js";
+import { initQuote } from "./quote";
 // ↑ 引入"摸鱼语录"模块
-import { initTodo } from "./todo.js";
+import { initTodo } from "./todo";
 // ↑ 引入"待办清单"模块
-import { initDraw } from "./draw.js";
+import { initDraw } from "./draw";
 // ↑ 引入"幸运抽签"模块
-import { initGuess } from "./guess.js";
+import { initGuess } from "./guess";
 // ↑ 引入"猜数字"模块
-import { initTheme } from "./theme.js";
+import { initTheme } from "./theme";
 // ↑ 引入"深色模式"模块
 import { initWin } from "./win";
 // ↑ 引入"窗口宽度显示"模块
-import { initReveal } from "./reveal.js";
+import { initReveal } from "./reveal";
 // ↑ 引入滚动显现模块
-import { initBackup } from "./backup.js";
+import { initBackup } from "./backup";
 // ↑ 引入数据打包模块
-import { initPwa } from "./pwa.js";
+import { initPwa } from "./pwa";
 // ↑ 引入 PWA（离线应用）模块
 import { initBoard } from "./board";
 // ↑ 引入"涂鸦板"模块。注意：改成了省略扩展名的写法（原 "./board.js"），
 //   因为文件已迁移为 board.ts，让解析器自动去找 .ts 版本
-import { initTTS } from "./tts.js";
+import { initTTS } from "./tts";
 // ↑ 引入"语音朗读"模块
-import { initGame } from "./fish.js";
+import { initGame } from "./fish";
 // ↑ 引入"接小鱼游戏"模块
-import { initSkillChart } from "./skill.js";
+import { initSkillChart } from "./skill";
 // ↑ 引入"技能图"模块（Chart.js 数据可视化）
-import { initPiano } from "./audio.js";
+import { initPiano } from "./audio";
 // ↑ 引入"迷你电子琴"模块
 
 initTheme();
@@ -72,12 +72,12 @@ initPiano();
 // ↑ 启动迷你电子琴
 
 // ===== 懒加载：点按钮才下载对应模块 =====
-const bootDog = lazyInit(() => import("./dog.js").then((m) => m.initDog()));
+const bootDog = lazyInit(() => import("./dog").then((m) => m.initDog()));
 // ↑ 造一个狗狗模块的"懒启动器"：第一次被调用时才去 import 并 initDog
 on("btnDog", "click", bootDog);
 // ↑ 点"来一只狗狗"按钮 → 触发懒启动器（第一次会下载代码并初始化）
 // 倒计时（点"开始/重置"或输入秒数才加载）
-const bootTimer = lazyInit(() => import("./timer.js").then((m) => m.initTimer()));
+const bootTimer = lazyInit(() => import("./timer").then((m) => m.initTimer()));
 // ↑ 造倒计时模块的懒启动器
 on("btnStartTimer", "click", bootTimer);
 // ↑ 点"开始"按钮触发
@@ -86,7 +86,7 @@ on("btnResetTimer", "click", bootTimer);
 on("timerInput", "input", bootTimer);
 // ↑ 一输入秒数也触发（保证输入校验的实时红框能接上）
 // GitHub 查询（点"查询"或开始输入才加载）
-const bootGithub = lazyInit(() => import("./github.js").then((m) => m.initGithub()));
+const bootGithub = lazyInit(() => import("./github").then((m) => m.initGithub()));
 // ↑ 造 GitHub 模块的懒启动器
 on("btnSearchUser", "click", bootGithub);
 // ↑ 点"查询"按钮触发

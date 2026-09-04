@@ -1,9 +1,13 @@
 // 倒计时器：输入秒数，开始后每秒减 1，到 0 提醒；带输入校验
 
-import { $, on, validateField } from "./utils.js";
+import { $, on, validateField } from "./utils";
 
 class Timer {
-  // ↑ 用 class 声明一个"类"，就好比一张"倒计时器图纸"（模具）
+  timerId: number | null;
+  // ↑ 给实例字段补上 TS 类型：定时器编号，没在计时时为 null
+  leftTime: number;
+  // ↑ 剩余秒数
+
   constructor() {
     // ↑ 构造器：每次 new Timer() 时自动执行一次，负责给这个实例初始化
     this.timerId = null;
@@ -12,14 +16,13 @@ class Timer {
     // ↑ this.leftTime 是它自己的剩余秒数
   }
 
-
-  validateTimer() {
+  validateTimer(): boolean {
     return validateField("timerInput", "btnStartTimer", (val) =>
       /^\d+$/.test(val) && Number(val) > 0
     );
   }
 
-  startTimer() {
+  startTimer(): void {
     if (!this.validateTimer()) {
       // ↑ 方法里调用另一个方法，记得加 this. 前缀
       $("timerDisplay").innerText = "请输入一个正整数（秒）";
@@ -27,7 +30,7 @@ class Timer {
     }
     if (this.timerId !== null) clearInterval(this.timerId);
     // ↑ 原来的 timerId 现在都换成 this.timerId
-    const seconds = Number($("timerInput").value);
+    const seconds = Number($<HTMLInputElement>("timerInput").value);
     this.leftTime = seconds;
     // ↑ leftTime 换成 this.leftTime
     $("timerDisplay").innerText = this.leftTime + " 秒";
@@ -37,25 +40,25 @@ class Timer {
       this.leftTime--;
       $("timerDisplay").innerText = this.leftTime + " 秒";
       if (this.leftTime <= 0) {
-        clearInterval(this.timerId);
+        clearInterval(this.timerId!);
         this.timerId = null;
         $("timerDisplay").innerText = "时间到！";
       }
     }, 1000);
   }
 
-  resetTimer() {
+  resetTimer(): void {
     if (this.timerId !== null) {
       clearInterval(this.timerId);
       this.timerId = null;
     }
     this.leftTime = 0;
     $("timerDisplay").innerText = "0 秒";
-    $("timerInput").value = "";
+    $<HTMLInputElement>("timerInput").value = "";
   }
 }
 
-export function initTimer() {
+export function initTimer(): void {
   const timer = new Timer();
   // ↑ new Timer() = 用"模具"压出实例，同时自动执行 constructor 完成初始化
   on("btnStartTimer", "click", () => timer.startTimer());

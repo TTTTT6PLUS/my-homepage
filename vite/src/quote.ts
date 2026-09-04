@@ -1,9 +1,9 @@
 // 随机摸鱼语录：点按钮抽一句话显示，还能一键复制到剪贴板
 
-import { $, on, notify } from "./utils.js";
+import { $, on, notify } from "./utils";
 // ↑ 现在也从公共工具里"借"一个 notify 进来
 
-const quotes = [
+const quotes: string[] = [
   // ↑ 定义语录数组，里面是 5 条字符串
   "摸鱼一时爽，一直摸鱼一直爽",
   "写代码累了，就喝口水歇一歇",
@@ -12,7 +12,7 @@ const quotes = [
   "吃白饭的蓝色大肥鱼我爱你"
 ];
 
-function randomQuote() {
+function randomQuote(): void {
   // ↑ 抽语录的核心函数
   const i = Math.floor(Math.random() * quotes.length);
   // ↑ 得到 0~4 的随机下标
@@ -20,7 +20,7 @@ function randomQuote() {
   // ↑ 把抽中的文字写进页面
 }
 
-function copyQuote() {
+function copyQuote(): void {
   // ↑ 把当前显示的语录复制进剪贴板
   const text = $("quoteText").innerText;
   // ↑ 先读出 quoteText 里现在显示的文字
@@ -31,7 +31,7 @@ function copyQuote() {
   });
 }
 
-export function initQuote() {
+export function initQuote(): void {
   on("btnQuote", "click", randomQuote);
   // ↑ 点"随机摸鱼语录"→ 抽一句
   on("btnCopyQuote", "click", copyQuote);

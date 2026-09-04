@@ -1,14 +1,27 @@
 // 公共小工具：很多模块都会用到，所以集中放在这里，别处 import 即可复用
 
-export const $ = (id) => document.getElementById(id);
+export const $ = <T extends HTMLElement = HTMLElement>(id: string): T =>
+  document.getElementById(id) as T;
 // ↑ 定义 $ 函数：传入元素的 id（注意：不带 # 号），返回对应的 DOM 元素。
 //   例如 $("btnHello") 就等价于 document.getElementById("btnHello")
+//   （TypeScript 版：泛型 T 默认 HTMLElement，返回"非空"的该类型元素，
+//     需要精确类型时可写 $<HTMLInputElement>("id") 这样的调用形式）
 
-export const on = (id, event, fn) => $(id).addEventListener(event, fn);
+export const on = (
+  id: string,
+  event: string,
+  fn: (...args: any[]) => void
+): void => {
+  $(id).addEventListener(event, fn);
+};
 // ↑ 定义 on 函数：给"某个 id 的元素"绑定"某个事件"，触发时执行 fn。
 //   例如 on("btnDog", "click", getDog) = 点狗狗按钮时执行 getDog
 
-export function makeButton(text, className, onClick) {
+export function makeButton(
+  text: string,
+  className: string,
+  onClick?: () => void
+): HTMLButtonElement {
   // ↑ 定义 makeButton 函数：动态创建一个按钮，返回它
   const btn = document.createElement("button");
   // ↑ 新建一个 <button> 元素
@@ -23,12 +36,15 @@ export function makeButton(text, className, onClick) {
 }
 
 // 防抖：连续触发时，等"停顿" delay 毫秒后才真正执行一次
-export function debounce(fn, delay) {
-  let timer = null;
+export function debounce<A extends any[]>(
+  fn: (...args: A) => void,
+  delay: number
+): (...args: A) => void {
+  let timer: number | null = null;
   // ↑ 用外层变量记住"定时器"的编号（闭包：内层函数能访问它）
-  return function (...args) {
+  return function (this: void, ...args: A): void {
     // ↑ 返回一个新函数，调用者绑定的就是这个新函数
-    clearTimeout(timer);
+    if (timer !== null) clearTimeout(timer);
     // ↑ 每次触发都先取消上一次的定时器，实现"重新计时"
     timer = setTimeout(() => fn.apply(this, args), delay);
     // ↑ 重新定一个闹钟：delay 毫秒后如果没再被取消，才真正执行 fn
@@ -36,10 +52,13 @@ export function debounce(fn, delay) {
 }
 
 // 节流：固定间隔 delay 毫秒内，最多执行一次
-export function throttle(fn, delay) {
+export function throttle<A extends any[]>(
+  fn: (...args: A) => void,
+  delay: number
+): (...args: A) => void {
   let last = 0;
   // ↑ 记录"上一次真正执行"的时间戳（闭包变量）
-  return function (...args) {
+  return function (this: void, ...args: A): void {
     const now = Date.now();
     // ↑ 拿到"现在"的时间戳
     if (now - last >= delay) {
@@ -53,7 +72,7 @@ export function throttle(fn, delay) {
 }
 
 // 弹系统通知：title 是标题，body 是正文
-export function notify(title, body) {
+export function notify(title: string, body: string): void {
   // ↑ 判断：如果浏览器不支持通知，就退回 alert
   if (!("Notification" in window)) {
     alert(title + "：" + body);
@@ -80,7 +99,7 @@ export function notify(title, body) {
 // ===== 第 30 关新增：通用存储 / 网络 / 输入工具 =====
 
 // 从 localStorage 读一个值，自动 JSON 解析；键不存在或解析失败时返回兜底值
-export function loadJSON(key, fallback = null) {
+export function loadJSON<T = any>(key: string, fallback: T = null as any): any {
   const raw = localStorage.getItem(key);
   // ↑ 先原始读出来（可能是 null）
   if (raw === null) return fallback;
@@ -95,18 +114,18 @@ export function loadJSON(key, fallback = null) {
 }
 
 // 把一个值 JSON 序列化后写进 localStorage（数字/布尔/数组/对象都能存）
-export function saveJSON(key, value) {
+export function saveJSON(key: string, value: unknown): void {
   localStorage.setItem(key, JSON.stringify(value));
   // ↑ JSON.stringify 把任意值转成字符串，再存
 }
 
 // 删除某个键（和上面两个凑成一套，语义更统一）
-export function removeKey(key) {
+export function removeKey(key: string): void {
   localStorage.removeItem(key);
 }
 
 // 带超时的 fetch：请求 JSON，超过 timeout 毫秒自动中断
-export async function fetchJSON(url, timeout = 5000) {
+export async function fetchJSON(url: string, timeout = 5000): Promise<any> {
   const controller = new AbortController();
   // ↑ 造一个"中断器"
   const timer = setTimeout(() => controller.abort(), timeout);
@@ -125,8 +144,8 @@ export async function fetchJSON(url, timeout = 5000) {
 }
 
 // 回车提交：在某个输入框按 Enter 键，就执行 fn
-export function onEnter(id, fn) {
-  on(id, "keydown", (e) => {
+export function onEnter(id: string, fn: () => void): void {
+  on(id, "keydown", (e: KeyboardEvent) => {
     // ↑ 复用咱们自己的 on 绑定 keydown
     if (e.key === "Enter") fn();
     // ↑ 命中回车才执行
@@ -134,14 +153,18 @@ export function onEnter(id, fn) {
 }
 
 // 输入校验：读输入框 → 按 tester 判断 → 自动挂"红框 + 禁用按钮"，返回是否合法
-export function validateField(inputId, btnId, tester) {
-  const val = $(inputId).value.trim();
+export function validateField(
+  inputId: string,
+  btnId: string,
+  tester: (val: string) => boolean
+): boolean {
+  const val = $<HTMLInputElement>(inputId).value.trim();
   // ↑ 取输入并去首尾空格
   const ok = tester(val);
   // ↑ 用调用者传来的 tester 函数判断"合不合法"
   $(inputId).classList.toggle("invalid", !ok);
   // ↑ 不合法就加红框
-  $(btnId).disabled = !ok;
+  $<HTMLButtonElement>(btnId).disabled = !ok;
   // ↑ 不合法就禁用按钮
   return ok;
   // ↑ 返回结果供调用者判断
@@ -149,10 +172,12 @@ export function validateField(inputId, btnId, tester) {
 
 // lazyInit：传入一个"加载函数"，返回一个"启动函数"。
 // 第一次调用"启动函数"才真正加载并初始化；之后再调用直接走缓存，绝不会重复下载、重复绑定。
-export function lazyInit(loadFn) {
-  let promise = null;
+export function lazyInit(
+  loadFn: () => Promise<unknown>
+): () => Promise<unknown> {
+  let promise: Promise<unknown> | null = null;
   // ↑ 用外层变量缓存"加载+初始化"的 Promise（闭包：内部箭头函数能一直访问它）
-  return () => {
+  return (): Promise<unknown> => {
     // ↑ 返回一个"启动函数"，将来点按钮时就调它
     if (!promise) {
       // ↑ 第一次进来 promise 还是 null，说明从没加载过

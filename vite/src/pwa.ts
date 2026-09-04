@@ -1,6 +1,6 @@
 // PWA 注册模块：把 Service Worker 挂到页面上，让主页离线也能打开
 
-export function initPwa() {
+export function initPwa(): void {
   // ↑ 启动函数，供 main.js 调用
 
   if (!("serviceWorker" in navigator)) {

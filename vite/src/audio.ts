@@ -2,13 +2,13 @@
 // 核心积木：AudioContext（总开关）→ OscillatorNode（声源/音色）→ GainNode（音量/包络）→ 扬声器
 // 规则：AudioContext 必须等用户第一次点击后才创建（浏览器的自动播放限制）
 
-import { $ } from "./utils.js";
+import { $ } from "./utils";
 // ↑ 只需要 $（找波形下拉和音量滑块）
 
-let ctx = null;
+let ctx: AudioContext | null = null;
 // ↑ 音频上下文的"单例"：模块级变量，整个页面只创建一次
 
-function getCtx() {
+function getCtx(): AudioContext {
   // ↑ 惰性创建 AudioContext
   if (!ctx) ctx = new AudioContext();
   // ↑ 第一次调用才创建（此时一定是用户点过按钮了，浏览器允许出声）
@@ -16,7 +16,7 @@ function getCtx() {
   // ↑ 以后每次调用直接返回同一个，不重复创建
 }
 
-export function playNote(freq, duration = 0.6) {
+export function playNote(freq: number, duration = 0.6): void {
   // ↑ 弹一个音：freq 是频率（音高），duration 是持续秒数
   //   export 出去，方便"接小鱼"游戏也来配音效
   const ac = getCtx();
@@ -24,7 +24,7 @@ export function playNote(freq, duration = 0.6) {
 
   const osc = ac.createOscillator();
   // ↑ 造"声源"：振荡器，它能按指定频率振动产生声音
-  osc.type = $("waveSelect").value;
+  osc.type = $<HTMLSelectElement>("waveSelect").value as OscillatorType;
   // ↑ 音色 = 下拉框选的波形（sine/square/triangle/sawtooth）
   osc.frequency.value = freq;
   // ↑ 音高 = 传入的频率（Hz），越大音越高
@@ -32,7 +32,7 @@ export function playNote(freq, duration = 0.6) {
   const gain = ac.createGain();
   // ↑ 造"音量旋钮"：放大器，管这个音多响、怎么淡入淡出
 
-  const vol = Number($("volSlider").value);
+  const vol = Number($<HTMLInputElement>("volSlider").value);
   // ↑ 从音量滑块读目标音量（0~1）
 
   const t = ac.currentTime;
@@ -57,9 +57,9 @@ export function playNote(freq, duration = 0.6) {
   // ↑ 到 t+duration 后再宽限 0.05 秒停止（等淡出曲线走完再掐断）
 }
 
-export function initPiano() {
+export function initPiano(): void {
   // ↑ 启动函数：把 8 个琴键和发声函数连起来
-  const keys = document.querySelectorAll(".piano-key");
+  const keys = document.querySelectorAll<HTMLButtonElement>(".piano-key");
   // ↑ 一次抓一批键（不能用 $，$ 只能按 id 选单个）
   keys.forEach((btn) => {
     // ↑ 遍历每个琴键

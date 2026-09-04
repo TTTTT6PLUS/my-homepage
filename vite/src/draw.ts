@@ -1,16 +1,16 @@
-import { $, on, makeButton, loadJSON, saveJSON } from "./utils.js";
+import { $, on, makeButton, loadJSON, saveJSON } from "./utils";
 // ↑ 引入 $、on、makeButton 三个工具
 
 const KEY = "pool";
 
-let pool = loadJSON(KEY, []);
+let pool: string[] = loadJSON(KEY, []);
 // ↑ 从 localStorage 读回名单数组；第一次没存过则为空数组 [] 兜底
 
-function savePool() {
+function savePool(): void {
   saveJSON(KEY, pool);
 }
 
-function renderPool() {
+function renderPool(): void {
   // ↑ 把名单画到页面上
   const list = $("poolList");
   list.innerHTML = "";
@@ -20,7 +20,7 @@ function renderPool() {
     // ↑ 遍历名单，n 是名字，i 是下标
     const li = document.createElement("li");
     // ↑ 为每个名字建一个 <li>
-    li.dataset.index = i;
+    li.dataset.index = String(i);
     // ↑ 把下标记录在 data-index 上，删除时能取回来
     li.textContent = n;
     // ↑ 显示名字
@@ -31,7 +31,7 @@ function renderPool() {
   });
 }
 
-function deleteName(i) {
+function deleteName(i: number): void {
   // ↑ 删除下标为 i 的名字
   pool.splice(i, 1);
   // ↑ 从数组里移除这一项
@@ -41,15 +41,15 @@ function deleteName(i) {
   // ↑ 重新渲染
 }
 
-function handlePoolClick(e) {
+function handlePoolClick(e: Event): void {
   // ↑ 事件委托：整个名单只绑一个点击监听
-  const btn = e.target.closest("button");
+  const btn = (e.target as HTMLElement).closest("button");
   // ↑ 找到被点的按钮
   if (!btn) return;
   // ↑ 点的不是按钮就忽略
 
-  const li = btn.closest("li");
-  // ↑ 找到这个按钮所在的 li
+  const li = btn.closest("li")!;
+  // ↑ 找到这个按钮所在的 li（按钮一定长在 li 里）
   const i = Number(li.dataset.index);
   // ↑ 取回之前记录的下标
 
@@ -57,20 +57,20 @@ function handlePoolClick(e) {
   // ↑ 如果是"删除"按钮，就删除对应名字
 }
 
-function addName() {
+function addName(): void {
   // ↑ 点"加入名单"时执行
-  const name = $("namePool").value.trim();
+  const name = $<HTMLInputElement>("namePool").value.trim();
   if (!name) return;
   // ↑ 空输入直接忽略
   pool.push(name);
   // ↑ 把名字加进数组尾部
-  $("namePool").value = "";
+  $<HTMLInputElement>("namePool").value = "";
   // ↑ 清空输入框
   savePool();
   renderPool();
 }
 
-function startDraw() {
+function startDraw(): void {
   // ↑ 点"开始抽签"时执行
   if (pool.length === 0) {
     // ↑ 名单是空的情况
@@ -87,7 +87,7 @@ function startDraw() {
   }, 2000);
 }
 
-export function initDraw() {
+export function initDraw(): void {
   on("btnAddName", "click", addName);
   on("btnDraw", "click", startDraw);
   on("poolList", "click", handlePoolClick);

@@ -1,14 +1,14 @@
 // 接住小鱼 · 小游戏：requestAnimationFrame 游戏循环 + Canvas 绘制 + 碰撞检测
 // 玩法：鼠标控制底部鲸鱼左右移动，接住掉落的小鱼；漏 3 条游戏结束
 
-import { $, on } from "./utils.js";
+import { $, on } from "./utils";
 // ↑ 引入 $（找元素）、on（绑事件）
-import { playNote } from "./audio.js";
+import { playNote } from "./audio";
 // ↑ 引入电子琴的"发声器"，给游戏配音效（第 39 关新增）
 
-const canvas = $("fishCanvas");
+const canvas = document.getElementById("fishCanvas") as HTMLCanvasElement;
 // ↑ 游戏画布
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d")!;
 // ↑ 2D 画笔（第 35 关涂鸦板的老朋友）
 
 const W = canvas.width;   // 720：画布逻辑宽度
@@ -22,7 +22,17 @@ const bucket = { x: W / 2 - 40, w: 80, h: 26, y: H - 34 };
 const FISH_COLORS = ["#f59e0b", "#ec4899", "#8b5cf6", "#10b981", "#ef4444"];
 // ↑ 小鱼可选的几种颜色，每次随机挑一条
 
-let fishes = [];
+type Fish = {
+  x: number;
+  y: number;
+  r: number;
+  speed: number;
+  color: string;
+  dead: boolean;
+};
+// ↑ TS 类型：记录一条"下落中的小鱼"长什么样（坐标/半径/速度/颜色/是否已处理完）
+
+let fishes: Fish[] = [];
 // ↑ 存放"正在下落的小鱼"的数组，每帧遍历更新它们
 let score = 0;
 // ↑ 得分
@@ -36,10 +46,10 @@ let spawnTimer = 0;
 // ↑ 距离下一条鱼出生的累计时间
 let spawnGap = 1;
 // ↑ 每多少秒生一条鱼（分数越高越短，游戏越难）
-let rafId = null;
+let rafId: number | null = null;
 // ↑ requestAnimationFrame 的句柄，保证循环只启动一次
 
-function makeFish() {
+function makeFish(): void {
   // ↑ 生一条新鱼（掉进数组）
   fishes.push({
     x: 20 + Math.random() * (W - 40),
@@ -57,7 +67,7 @@ function makeFish() {
   });
 }
 
-function drawFish(f) {
+function drawFish(f: Fish): void {
   // ↑ 画一条小鱼：身体椭圆 + 眼睛 + 尾巴三角
   ctx.fillStyle = f.color;
   // ↑ 身体颜色
@@ -83,7 +93,7 @@ function drawFish(f) {
   // ↑ 在鱼头方向点个小白眼珠
 }
 
-function drawWhale() {
+function drawWhale(): void {
   // ↑ 画底部鲸鱼（会动的"接鱼桶"）
   const cx = bucket.x + bucket.w / 2;
   // ↑ 鲸鱼中心 x
@@ -118,17 +128,17 @@ function drawWhale() {
   ctx.fill();
 }
 
-function updateScore() {
-  $("fishScore").textContent = score;
+function updateScore(): void {
+  $("fishScore").textContent = String(score);
   // ↑ 把得分数字同步到页面上
 }
 
-function updateLives() {
-  $("fishLives").textContent = lives;
+function updateLives(): void {
+  $("fishLives").textContent = String(lives);
   // ↑ 把生命数字同步到页面上
 }
 
-function endGame() {
+function endGame(): void {
   // ↑ 游戏结束：停在当前画面，不再更新
   over = true;
   // ↑ 置结束标记，loop 里会跳过鱼的更新
@@ -136,7 +146,7 @@ function endGame() {
   // ↑ 页面提示换成结束文案
 }
 
-function render() {
+function render(): void {
   // ↑ 重绘整帧画面（每帧都会被调用）
   ctx.fillStyle = "#e0f2fe";
   // ↑ 海蓝背景
@@ -168,7 +178,7 @@ function render() {
   }
 }
 
-function loop(t) {
+function loop(t: number): void {
   // ↑ 游戏主循环：浏览器每帧（约 1/60 秒）调用一次
   const dt = lastT ? (t - lastT) / 1000 : 0;
   // ↑ 本帧距上一帧的时间（秒）。首帧 lastT=0 会算出巨值，所以给 0 兜底
@@ -228,7 +238,7 @@ function loop(t) {
   // ↑ 预约下一帧——循环永不间断
 }
 
-function restart() {
+function restart(): void {
   // ↑ 重新开始：把所有状态打回出厂设置
   fishes = [];
   // ↑ 清空所有下落中的鱼
@@ -252,9 +262,9 @@ function restart() {
   }
 }
 
-export function initGame() {
+export function initGame(): void {
   // ↑ 启动函数：main.js 调用
-  canvas.addEventListener("pointermove", (e) => {
+  canvas.addEventListener("pointermove", (e: PointerEvent) => {
     // ↑ 鼠标在画布上移动时控制鲸鱼（pointermove 鼠标触屏通用）
     const rect = canvas.getBoundingClientRect();
     // ↑ 画布实际显示位置（CSS 可能被缩放）

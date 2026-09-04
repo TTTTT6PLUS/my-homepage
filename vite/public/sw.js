@@ -1,7 +1,7 @@
 // ===== Service Worker：离线管家 =====
 // 它运行在独立线程，能拦截页面发出的网络请求，实现"先缓存、再联网"
 
-const CACHE_NAME = "my-homepage-202609040208";
+const CACHE_NAME = "my-homepage-202609040228";
 // ↑ 缓存版本号：每次构建会由 scripts/bump-sw.js 自动改成新时间戳，浏览器才会刷新离线缓存
 
 const PRECACHE = ["./", "./index.html", "./avatar.svg", "./manifest.json"];

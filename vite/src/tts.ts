@@ -1,13 +1,13 @@
 // 语音朗读 · Step 2：把系统里的中文声音装进下拉框
 // 核心技术：speechSynthesis.getVoices() 取声音 + voiceschanged 事件等声音"晚到"
 
-import { $, on } from "./utils.js";
+import { $, on } from "./utils";
 // ↑ $ 找元素，on 绑事件（这步开始要用 on 绑定朗读/停止按钮）
 
-const voiceSelect = $("ttsVoice");
+const voiceSelect = $<HTMLSelectElement>("ttsVoice");
 // ↑ 语音下拉框元素，模块顶层先拿到，后面函数都能直接用
 
-function fillVoices(voices) {
+function fillVoices(voices: SpeechSynthesisVoice[]): void {
   // ↑ 把声音数组填进下拉框
   voiceSelect.innerHTML = "";
   // ↑ 先清空（把 HTML 里手写的占位 option 也一起清掉）
@@ -33,7 +33,7 @@ function fillVoices(voices) {
   });
 }
 
-function loadVoices() {
+function loadVoices(): void {
   // ↑ 核心：取声音 → 筛中文 → 填充下拉框
   const voices = speechSynthesis.getVoices();
   // ↑ 问浏览器要全部声音；注意第一次调用常常返回空数组！
@@ -47,9 +47,9 @@ function loadVoices() {
   // ↑ 有中文就只填中文；万一系统连中文都没有，退而求其次全部填上
 }
 
-function speak() {
+function speak(): void {
   // ↑ 朗读：读输入框的文字
-  const text = $("ttsText").value.trim();
+  const text = $<HTMLInputElement>("ttsText").value.trim();
   // ↑ 取文字并去掉首尾空格
   if (!text) return;
   // ↑ 空输入就不念（也省得 cancel 打断别人）
@@ -60,9 +60,9 @@ function speak() {
   const utterance = new SpeechSynthesisUtterance(text);
   // ↑ 造一张"播音稿"：要念的文字 + 播放参数都挂它身上
 
-  utterance.rate = Number($("ttsRate").value);
+  utterance.rate = Number($<HTMLInputElement>("ttsRate").value);
   // ↑ 语速：range 给的是字符串，Number 转成数字（0.5~2）
-  utterance.pitch = Number($("ttsPitch").value);
+  utterance.pitch = Number($<HTMLInputElement>("ttsPitch").value);
   // ↑ 音调：数字越大声音越尖细（0~2）
 
   const chosen = speechSynthesis
@@ -88,7 +88,7 @@ function speak() {
   // ↑ 把播音稿交给播音台，正式开念！
 }
 
-function stopSpeaking() {
+function stopSpeaking(): void {
   // ↑ 停止：立刻闭嘴
   speechSynthesis.cancel();
   // ↑ 播音台掐断当前朗读（没有正在念的也无害）
@@ -96,7 +96,7 @@ function stopSpeaking() {
   // ↑ 状态提示"停了"
 }
 
-export function initTTS() {
+export function initTTS(): void {
   // ↑ 启动函数：main.js 会调用
   loadVoices();
   // ↑ 先碰运气直接调一次（有时浏览器第一次就有声音）
