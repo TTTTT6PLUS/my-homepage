@@ -8,22 +8,39 @@ from pathlib import Path
 # ↑ 从 Python 标准库导入 Path（处理文件路径的工具）
 #   Django 用它在不同操作系统上都能正确拼接路径
 
+import os
+# ↑ 导入 os：用来读取"环境变量"（部署云端后，密钥/开关/域名都从环境变量注入）
+
 # ===== 路径相关 =====
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 # ↑ 项目根目录：settings.py 在 config/ 里，它的父目录的父目录 = 项目根（backend/）
 #   后面所有文件路径（数据库、静态文件）都以它为基准
 
+# ===== 环境变量读取小帮手（第 48 关新增：让同一份代码本地/云端都能跑） =====
+
+def env_list(name: str) -> list[str]:
+    """读一个环境变量，按逗号切成列表；没设置就返回空列表。"""
+    return [x.strip() for x in os.environ.get(name, '').split(',') if x.strip()]
+# ↑ 例：环境变量 ALLOWED_HOSTS="a.onrender.com,b.com"
+#   会被切成 ['a.onrender.com', 'b.com']
+
 # ===== 安全相关 =====
 
-SECRET_KEY = 'django-insecure-6&-b9kc5%9()ibzknjv)hf!8g%z5-a(0(dni=&w@*0e8=&1u_y'
-# ↑ 签名密钥：Django 用它加密 session、密码等（生产环境必须换成保密的随机串）
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-6&-b9kc5%9()ibzknjv)hf!8g%z5-a(0(dni=&w@*0e8=&1u_y',
+)
+# ↑ 优先读环境变量 DJANGO_SECRET_KEY（云端面板里配置的真密钥，不进代码库）；
+#   本地没设环境变量时，自动用下面这个开发密钥兜底（开发期用，生产必换）
 
-DEBUG = True
-# ↑ 调试模式：True 时出错会显示详细报错页（开发期开，上线必须关）
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+# ↑ 云端部署时把 DJANGO_DEBUG 设成 'False' → DEBUG 变 False，关掉调试模式；
+#   本地不设置 → 默认 'True'，保持开发期的详细报错页面
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-# ↑ 允许访问本站的域名列表（开发期放行本机；上线要加服务器域名）
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost'] + env_list('ALLOWED_HOSTS')
+# ↑ 允许访问的域名列表 = 本机两个（开发用）+ 环境变量里填的云端域名
+#   Render 面板配 ALLOWED_HOSTS=你的应用名.onrender.com，公网请求才不会被拦
 
 # ===== 应用注册 =====
 # 装哪些"零件"进这个项目
@@ -139,5 +156,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5174',
     'http://localhost:5175',   # Vue 开发服务器（fullstack 前端实际端口）
     'http://127.0.0.1:5175',
-]
+] + env_list('CORS_ALLOWED_ORIGINS')
 # ↑ 只允许这些"来源"的网页跨域调用本后端，别的一律拒绝（安全）
+#   本地默认放行 5173~5175 开发端口；上线时用环境变量追加线上前端域名：
+#   CORS_ALLOWED_ORIGINS=https://你的前端.vercel.app

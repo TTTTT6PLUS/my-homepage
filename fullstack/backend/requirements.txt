@@ -1,0 +1,7 @@
+# requirements.txt —— 后端依赖清单（云端 Render 构建时会读它来自动装环境）
+# 版本与本地 pip 装的完全一致；比本地多一个 gunicorn：
+# gunicorn 是"生产版 Python 服务器"，Django 自带 runserver 只配开发用
+Django==5.2.17
+djangorestframework==3.18.0
+django-cors-headers==4.9.0
+gunicorn==23.0.0

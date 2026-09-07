@@ -4,8 +4,10 @@
 //   2) 封装对第三方公开 API 的调用（dog.ceo / GitHub，原版就直连，这里保持）
 // 组件只调用这里导出的函数，不直接写 fetch —— 网络逻辑集中管理
 
-const BASE = "http://127.0.0.1:8001/api";
-// ↑ 后端基址（Django 开发服务器地址）
+// 后端基址：优先用构建时注入的环境变量 VITE_API_BASE（Vercel 面板里配置，
+// 指向 Render 的公网后端地址）；本地没设这个变量时自动回落开发服务器地址
+const BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8001/api";
+// ↑ import.meta.env = Vite 暴露的环境变量入口（只认 VITE_ 开头的键）
 
 // ===================== 类型定义（与后端模型一一对应） =====================
 
