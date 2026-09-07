@@ -1,0 +1,16 @@
+/* style.css —— 全局基础样式（所有组件共享） */
+* {
+  box-sizing: border-box;
+  /* 让 padding 和 border 算进元素总宽高，布局更好算 */
+}
+
+body {
+  margin: 0;
+  /* 去掉浏览器默认外边距 */
+  background: linear-gradient(180deg, #e0e7ff, #f0f9ff);
+  /* 从上到下的淡紫到淡蓝渐变背景 */
+  min-height: 100vh;
+  /* 至少占满一屏高度 */
+  color: #1e293b;
+  /* 默认文字颜色 */
+}

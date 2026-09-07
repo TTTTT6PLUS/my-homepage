@@ -1,0 +1,10 @@
+# Python / Django 忽略项
+__pycache__/
+*.pyc
+.venv/
+# 数据库文件不入库（别人 clone 后自己 migrate 生成）
+db.sqlite3
+
+# Node / Vite 忽略项
+node_modules/
+dist/
