@@ -1,94 +1,139 @@
-// api.ts —— 前端调用后端 API 的"桥梁"
-// 作用：把"请求 Django 后端"的代码集中在这里，组件里只调用这里的函数，
-// 不用每个组件都写一遍 fetch。这也是工程化的好习惯：网络层单独隔离。
+// api.ts —— 前端所有网络请求的"总出入口"
+// 职责：
+//   1) 封装对 Django 后端（8001 端口）的 REST 调用
+//   2) 封装对第三方公开 API 的调用（dog.ceo / GitHub，原版就直连，这里保持）
+// 组件只调用这里导出的函数，不直接写 fetch —— 网络逻辑集中管理
 
-// 后端地址：Django 跑在本机 8001 端口
 const BASE = "http://127.0.0.1:8001/api";
-// ↑ 所有请求都拼上这个前缀，比如 /todos/ 会变成 http://127.0.0.1:8001/api/todos/
+// ↑ 后端基址（Django 开发服务器地址）
 
-// ---- 类型定义：和后端 models.py / serializers.py 里的字段一一对应 ----
+// ===================== 类型定义（与后端模型一一对应） =====================
 
 export interface Todo {
-  // ↑ 待办对象（对应后端的 Todo 表）
-  id: number; // 主键：后端自动生成
-  title: string; // 标题文字
-  done: boolean; // 是否完成
-  created_at: string; // 创建时间（ISO 字符串）
+  id: number;
+  title: string;
+  done: boolean;
+  created_at: string;
 }
 
 export interface Quote {
-  // ↑ 语录对象（对应后端的 Quote 表）
   id: number;
-  text: string; // 语录正文
-  author: string; // 作者
+  text: string;
+  author: string;
   created_at: string;
 }
 
-export interface Countdown {
-  // ↑ 倒计时对象（对应后端的 Countdown 表）
+export interface PoolName {
   id: number;
-  name: string; // 事件名
-  target_time: string; // 目标时间（ISO 字符串）
+  name: string;
   created_at: string;
 }
 
-// ---- 通用请求函数（内部工具，组件不直接用） ----
+export interface Setting {
+  id: number;
+  key: string;
+  value: string;
+  updated_at: string;
+}
+
+// ===================== 通用请求函数 =====================
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  // ↑ 封装 fetch：自动拼 URL、解析 JSON、统一错误处理
-  //   泛型 T：调用方告诉它"这次期望返回什么类型的对象"
+  // ↑ 泛型封装：拼 URL、带 JSON 头、解析响应、统一抛错
   const res = await fetch(BASE + path, {
     headers: { "Content-Type": "application/json" },
-    // ↑ 告诉后端"我发的是 JSON 格式"
     ...options,
-    // ↑ 展开调用方额外传入的配置（如 method、body）
   });
-  if (!res.ok) {
-    // ↑ 如果状态码不是 2xx（成功）
-    throw new Error(`请求失败：HTTP ${res.status}`);
-    // ↑ 抛出一个带状态码的错误，让组件 catch 后提示用户
-  }
+  if (!res.ok) throw new Error(`请求失败：HTTP ${res.status}`);
   return (await res.json()) as T;
-  // ↑ 解析响应 JSON 并断言成泛型 T 的类型
 }
 
-// ---- 待办接口 ----
+// ===================== 待办接口（对应原 todo.ts） =====================
 
 export const todoApi = {
-  // ↑ 把待办相关的接口函数打包成一个对象（命名空间，好找）
   list: () => request<Todo[]>("/todos/"),
-  // ↑ GET /todos/：获取全部待办
-
   create: (title: string) =>
     request<Todo>("/todos/", {
-      method: "POST", // POST = 新增
-      body: JSON.stringify({ title, done: false }), // 把新待办序列化成 JSON
+      method: "POST",
+      body: JSON.stringify({ title, done: false }),
     }),
-
-  toggle: (t: Todo) =>
+  update: (t: Todo) =>
     request<Todo>(`/todos/${t.id}/`, {
-      method: "PATCH", // PATCH = 局部更新（只改 done 字段）
-      body: JSON.stringify({ done: !t.done }), // 把完成状态取反后发给后端
+      method: "PATCH",
+      body: JSON.stringify(t),
     }),
-
   remove: (id: number) =>
     request<void>(`/todos/${id}/`, { method: "DELETE" }),
-  // ↑ DELETE /todos/<id>/：删除指定 id 的待办
 };
 
-// ---- 语录接口 ----
+// ===================== 语录接口（对应原 quote.ts） =====================
 
 export const quoteApi = {
   list: () => request<Quote[]>("/quotes/"),
-  // ↑ GET /quotes/：全部语录
-
+  // ↑ GET /quotes/：全部语录（备份导出用）
   random: () => request<Quote>("/quotes/random/"),
-  // ↑ GET /quotes/random/：随机一条（后端 views.py 里自定义的接口）
+  // ↑ GET /quotes/random/：随机一条
 };
 
-// ---- 倒计时接口 ----
+// ===================== 抽签名单接口（对应原 draw.ts） =====================
 
-export const countdownApi = {
-  list: () => request<Countdown[]>("/countdowns/"),
-  // ↑ GET /countdowns/：全部倒计时
+export const poolApi = {
+  list: () => request<PoolName[]>("/pool/"),
+  create: (name: string) =>
+    request<PoolName>("/pool/", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+    }),
+  remove: (id: number) => request<void>(`/pool/${id}/`, { method: "DELETE" }),
+  random: () => request<PoolName>("/pool/random/"),
 };
+
+// ===================== 通用键值设置接口（原 localStorage 全家桶） =====================
+
+export const settingApi = {
+  // 读取某个键的值；后端约定：键不存在也返回 200 + value:""
+  get: (key: string) =>
+    request<Setting>(`/settings/get_by_key/?key=${encodeURIComponent(key)}`),
+
+  // 写入某个键：有则更新，无则新建
+  set: async (key: string, value: string): Promise<void> => {
+    // 先查这个键是否存在
+    const list = await request<Setting[]>("/settings/?key=" + encodeURIComponent(key));
+    // ↑ 用 DRF 的 list + 过滤参数查
+    if (list.length > 0) {
+      // 已存在 → PATCH 更新
+      await request<Setting>(`/settings/${list[0].id}/`, {
+        method: "PATCH",
+        body: JSON.stringify({ key, value }),
+      });
+    } else {
+      // 不存在 → POST 新建
+      await request<Setting>("/settings/", {
+        method: "POST",
+        body: JSON.stringify({ key, value }),
+      });
+    }
+  },
+};
+
+// ===================== 第三方公开 API（原版直连，保持） =====================
+
+export async function fetchRandomDog(): Promise<string> {
+  // ↑ 从 dog.ceo 抓一张随机狗狗图，返回图片 URL
+  const res = await fetch("https://dog.ceo/api/breeds/image/random");
+  const data = (await res.json()) as { message: string; status: string };
+  return data.message;
+}
+
+export async function fetchGithubUser(name: string) {
+  // ↑ 从 GitHub 公开 API 查用户资料（未登录匿名查询，有速率限制）
+  const res = await fetch(`https://api.github.com/users/${name}`);
+  if (!res.ok) throw new Error("没找到这个用户");
+  const data = (await res.json()) as {
+    avatar_url: string;
+    login: string;
+    public_repos: number;
+    followers: number;
+  };
+  return data;
+}
